@@ -1,2 +1,2 @@
-# Sophia_TelegramBot
-Sophia - A Telegram Bot for WazirX Crypto Exachange Analysis
+# Aster_TelegramBot
+Aster - A Telegram Bot for WazirX Crypto Exachange Analysis
