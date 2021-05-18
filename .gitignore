@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#project specific
+secrets.py
+env
+logs.txt
+DogeRate.xlsx
+
 # C extensions
 *.so
 

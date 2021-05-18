@@ -1,0 +1,4 @@
+requests==2.25.1
+python-telegram-bot==13.5
+pandas==1.2.4
+openpyxl==3.0.7
