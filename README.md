@@ -18,7 +18,7 @@ This will install all the project dependencies.
 
 **3. Configure Missing Files:**
 
-**File: api_key.py**
+**File: secrets.py**
 ```bash
 echo "API_KEY = 'YOUR_BOT_API_KEY'" > secrets.py
 ```
@@ -33,4 +33,4 @@ python3 main.py
 ```
 
 ## :page_facing_up: License
-[MIT](./LICENSE) © Garvit Joshi
+[MIT](./LICENSE) © [Garvit Joshi](https://github.com/garvit-joshi)
