@@ -11,7 +11,7 @@ Aster - A Telegram Bot for WazirX Crypto Exachange Analysis
 **2. Now, run the following commands:**
 
 ```bash
-cd git@github.com:garvit-joshi/Aster_TelegramBot.git
+cd Aster_TelegramBot
 pip install -r requirements.txt
 ```
 This will install all the project dependencies.
