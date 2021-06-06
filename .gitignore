@@ -8,6 +8,7 @@ secrets.py
 env
 logs.txt
 DogeRate.xlsx
+DogeRate.txt
 
 # C extensions
 *.so

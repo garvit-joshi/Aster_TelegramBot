@@ -5,6 +5,7 @@ import requests
 import pandas as pd
 from telegram.ext import CallbackContext
 from telegram import ParseMode, Update
+from telegram.files.document import Document
 import constants as C
 
 
@@ -88,7 +89,8 @@ def plot_rate(update: Update, context: CallbackContext) -> int:
                               )
     doge_rate = [[0, 0, 0], [0, 0, 0], [
         0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    while():
+    loop_iteration = 0
+    while(True):
         current_rate = get_rate()
         if current_rate == -1:
             update.message.reply_text("A Problem with API has been found, Exiting the function",
@@ -105,5 +107,12 @@ def plot_rate(update: Update, context: CallbackContext) -> int:
         doge_rate[0][1] = date
         doge_rate[0][2] = time
         excel_dataframe = pd.DataFrame(doge_rate)
+        print(excel_dataframe)
         excel_dataframe.to_excel("DogeRate.xlsx")
-        sleep(60)
+        excel_dataframe.to_csv('DogeRate.txt', header=None,
+                               index=None, sep=' ', mode='w')
+        loop_iteration = loop_iteration + 1
+        if (loop_iteration >= 6):
+            context.bot.send_document(
+                chat_id=update.message.chat_id, document="multipart/form-data", filename='DogeRate.txt')
+        sleep(10)
