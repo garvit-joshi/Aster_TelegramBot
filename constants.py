@@ -1,7 +1,7 @@
 LOG_FILE = "logs.txt"
 
 RATE_TEXT_INR = """
-***Token Rate INR***
+***Token Rate $token/INR***
 ***Rate:*** $rate INR
 ***Low:*** $lrate INR
 ***High:*** $hrate INR
@@ -9,8 +9,13 @@ RATE_TEXT_INR = """
 ***Time:*** $time
 """
 
+All_RATE_TEXT_INR = """
+Token Rates:
+BTC: 
+"""
+
 RATE_TEXT_USD = """
-***Token Rate USD***
+***Token Rate $token/USD***
 ***Rate:*** $rate USD
 ***Low:*** $lrate USD
 ***High:*** $hrate USD

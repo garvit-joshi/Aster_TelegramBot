@@ -1,3 +1,4 @@
+from re import T
 from string import Template
 import requests
 from telegram.ext import CallbackContext
@@ -25,14 +26,15 @@ def get_rate():
     return wazirx_request.json()
 
 
-def rate_command(update: Update, context: CallbackContext) -> None:
+def rate_command(update: Update, context: CallbackContext, token=None) -> int:
     """Reply with real time Token rate
 
     Keyword arguments:
         update: This object represents an incoming update.
         context: This is a context object error handler.
     """
-    token = update.message.text[:-4].lower()
+    if token == None:
+        token = update.message.text[:-4].lower()
     tokeninr = token + "inr"
     tokenusd = token + "usdt"
     try:
@@ -56,8 +58,24 @@ def rate_command(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(C.OOPS_404)
         return -1
     rate_text = Template(C.RATE_TEXT_INR).substitute(
-        rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
+        token=token.upper(), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
     update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
     rate_text = Template(C.RATE_TEXT_USD).substitute(
-        rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
+        token=token.upper(), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
     update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
+
+
+def all_rate(update: Update, context: CallbackContext) -> int:
+    try:
+        rate = get_rate()
+    except:
+        update.message.reply_text(C.OOPS_404)
+        return -1
+    tokens = ["btc", "matic", "eth", "hbar",
+              "doge", "xrp", "ada", "xlm", "link"]
+    message = ""
+    for token in tokens:
+        tokeninr = token + "inr"
+        token_rate = rate[tokeninr]['last']
+        message = message + token.upper() + ": " + token_rate + " INR\n"
+    update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)

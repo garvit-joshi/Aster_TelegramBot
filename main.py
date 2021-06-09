@@ -79,6 +79,7 @@ def main():
     dispatch.add_handler(MessageHandler(Filters.regex(
         re.compile('RATE$', re.IGNORECASE)), R.rate_command))
     dispatch.add_handler(CommandHandler("source", source_command))
+    dispatch.add_handler(CommandHandler("all_rates", R.all_rate))
     dispatch.add_handler(CommandHandler("help", help_command))
 
     # Start the Bot
