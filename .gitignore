@@ -9,6 +9,7 @@ env
 logs.txt
 DogeRate.xlsx
 DogeRate.txt
+hello.py
 
 # C extensions
 *.so

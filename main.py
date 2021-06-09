@@ -10,6 +10,7 @@ from telegram.ext import (
 )
 from telegram import Update, ParseMode
 import constants as C
+import re
 import rate as R
 
 print("Bot Started...")
@@ -64,6 +65,7 @@ def source_command(update: Update, context: CallbackContext) -> None:
 def main():
     """Main function responsible for starting the bot and listening to commands.
     """
+
     # Create the Updater and pass it our bot's token.
     updater = Updater(keys.API_KEY, use_context=True)
 
@@ -74,11 +76,10 @@ def main():
     dispatch.add_handler(MessageHandler(
         Filters.status_update.new_chat_members, welcome_user))
     dispatch.add_handler(CommandHandler("start", start_command))
-    dispatch.add_handler(CommandHandler("rate", R.rate_command))
+    dispatch.add_handler(MessageHandler(Filters.regex(
+        re.compile('INR$', re.IGNORECASE)), R.rate_command))
     dispatch.add_handler(CommandHandler("source", source_command))
     dispatch.add_handler(CommandHandler("help", help_command))
-    dispatch.add_handler(CommandHandler(
-        "rategraph", R.plot_rate, run_async=True))
 
     # Start the Bot
     updater.start_polling()
