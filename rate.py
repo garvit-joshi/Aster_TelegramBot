@@ -1,4 +1,3 @@
-from re import T
 from string import Template
 import requests
 from telegram.ext import CallbackContext
