@@ -1,13 +1,24 @@
 LOG_FILE = "logs.txt"
 
-RATE_TEXT = """
-***Token Rate***
-Rate: $rate INR
+RATE_TEXT_INR = """
+***Token Rate INR***
+***Rate:*** $rate INR
+***Low:*** $lrate INR
+***High:*** $hrate INR
+***Volume:*** $vol
+***Time:*** $time
 """
 
-RATE_FLAG = 0
+RATE_TEXT_USD = """
+***Token Rate USD***
+***Rate:*** $rate USD
+***Low:*** $lrate USD
+***High:*** $hrate USD
+***Volume:*** $vol
+***Time:*** $time
+"""
 
-OOPS_404 = """404! Your page ain't here kid..."""
+OOPS_404 = """404! Your token ain't here kid..."""
 
 HELP_TEXT = """
 Hey There!

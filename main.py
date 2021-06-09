@@ -77,7 +77,7 @@ def main():
         Filters.status_update.new_chat_members, welcome_user))
     dispatch.add_handler(CommandHandler("start", start_command))
     dispatch.add_handler(MessageHandler(Filters.regex(
-        re.compile('INR$', re.IGNORECASE)), R.rate_command))
+        re.compile('RATE$', re.IGNORECASE)), R.rate_command))
     dispatch.add_handler(CommandHandler("source", source_command))
     dispatch.add_handler(CommandHandler("help", help_command))
 
