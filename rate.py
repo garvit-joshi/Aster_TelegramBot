@@ -1,9 +1,84 @@
 from string import Template
+from time import sleep
 import requests
 from telegram.ext import CallbackContext
 from telegram import ParseMode, Update
 import constants as C
 from datetime import datetime
+
+
+def alert_plus(update: Update, context: CallbackContext) -> int:
+    """Alert when Token increases by ceratin persentage
+
+    Returns:
+        -1: If Exceptions occours
+        0:  Alert Executes
+    """
+    message = update.message.text
+    message = message.split(" ")
+    token = str(message[0]+"inr").lower()
+    try:
+        percentage = float(message[1])
+        if percentage <= 0:
+            raise ValueError
+        current_rate = float(get_rate()[token]['last'])
+    except ValueError:
+        update.message.reply_text(C.OOPS_WRONG_FORMAT)
+        return -1
+    except:
+        update.message.reply_text(C.OOPS_404)
+        return -1
+    expected_rate = round(current_rate + (current_rate/100*percentage), 2)
+    message_set = Template(C.ALERT_PLUS_SET).substitute(token=token[:-3].upper(
+    ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
+    update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
+    while True:
+        current_rate = float(get_rate()[token]['last'])
+        if current_rate >= expected_rate:
+            message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
+                token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
+            update.message.reply_text(
+                message_executed, parse_mode=ParseMode.MARKDOWN)
+            break
+        sleep(10)
+    return 0
+
+
+def alert_minus(update: Update, context: CallbackContext) -> int:
+    """Alert when Token decreases by ceratin percentage
+
+    Returns:
+        -1: If Exceptions occours
+        0:  Alert Executes
+    """
+    message = update.message.text
+    message = message.split(" ")
+    token = str(message[0]+"inr").lower()
+    try:
+        percentage = float(message[1])
+        if percentage <= 0:
+            raise ValueError
+        current_rate = float(get_rate()[token]['last'])
+    except ValueError:
+        update.message.reply_text(C.OOPS_WRONG_FORMAT)
+        return -1
+    except:
+        update.message.reply_text(C.OOPS_404)
+        return -1
+    expected_rate = round(current_rate - (current_rate/100*percentage), 2)
+    message_set = Template(C.ALERT_MINUS_SET).substitute(token=token[:-3].upper(
+    ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
+    update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
+    while True:
+        current_rate = float(get_rate()[token]['last'])
+        if current_rate <= expected_rate:
+            message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(
+                token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
+            update.message.reply_text(
+                message_executed, parse_mode=ParseMode.MARKDOWN)
+            break
+        sleep(10)
+    return 0
 
 
 def get_rate():
@@ -70,11 +145,19 @@ def all_rate(update: Update, context: CallbackContext) -> int:
     except:
         update.message.reply_text(C.OOPS_404)
         return -1
-    tokens = ["btc", "matic", "eth", "hbar",
-              "doge", "xrp", "ada", "xlm", "link"]
+    inrtokens = ["btc", "matic", "eth", "hbar",
+                 "doge", "xrp", "ada", "xlm", "link", "trx"]
+    usdttokens = ["btc", "matic", "eth", "hbar",
+                  "doge", "xrp", "ada", "xlm", "link", "trx", "xmr", "theta", "tfuel"]
     message = ""
-    for token in tokens:
+    for token in inrtokens:
         tokeninr = token + "inr"
         token_rate = rate[tokeninr]['last']
         message = message + token.upper() + ": " + token_rate + " INR\n"
+    update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+    message = ""
+    for token in usdttokens:
+        tokenusdt = token + "usdt"
+        token_rate = rate[tokenusdt]['last']
+        message = message + token.upper() + ": " + token_rate + " USDT\n"
     update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)

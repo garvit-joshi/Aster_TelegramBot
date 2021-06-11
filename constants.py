@@ -9,21 +9,49 @@ RATE_TEXT_INR = """
 ***Time:*** $time
 """
 
-All_RATE_TEXT_INR = """
-Token Rates:
-BTC: 
+ALERT_MINUS_EXECUTED = """
+***Alert Executed***
+Latest $token price: $lprice INR
+Percentage Decreased: $percentage%
+"""
+
+
+ALERT_MINUS_SET = """
+***Alert $token***
+Latest $token price: $lprice INR
+Alert when $token <= $aprice INR
+Percentage Decrease: $percentage%
+"""
+
+ALERT_PLUS_EXECUTED = """
+***Alert Executed***
+Latest $token price: $lprice INR
+Percentage Increased: $percentage%
+"""
+
+ALERT_PLUS_SET = """
+***Alert $token***
+Latest $token price: $lprice INR
+Alert when $token >= $aprice INR
+Percentage Increase: $percentage%
 """
 
 RATE_TEXT_USD = """
-***Token Rate $token/USD***
-***Rate:*** $rate USD
-***Low:*** $lrate USD
-***High:*** $hrate USD
+***Token Rate $token/USDT***
+***Rate:*** $rate USDT
+***Low:*** $lrate USDT
+***High:*** $hrate USDT
 ***Volume:*** $vol
 ***Time:*** $time
 """
 
-OOPS_404 = """404! Your token ain't here kid..."""
+OOPS_404 = """
+404! Your token ain't here kid...
+"""
+
+OOPS_WRONG_FORMAT = """
+Not sure what you are talking about... \U0001F928	
+"""
 
 HELP_TEXT = """
 Hey There!
@@ -35,7 +63,7 @@ Currently, I am in Development. Some commands that I support:
 4. Type Coin Name with INR at last
 As I am an Open Source Project, You can contribute to my development.
 Link: [here](https://github.com/garvit-joshi/Aster_TelegramBot)
-I am learning new things everyday. :sunglasses:
+I am learning new things everyday. \U0001F60E
 """
 
 SOURCE = """
