@@ -1,17 +1,27 @@
 from string import Template
 from time import sleep
+from datetime import datetime
 import requests
 from telegram.ext import CallbackContext
 from telegram import ParseMode, Update
 import constants as C
-from datetime import datetime
 
 
 def get_time():
+    """Gets Current Time
+
+    Returns:
+        HH:MM:SS AM/PM DD/MM/YYYY
+    """
     return datetime.now().strftime('%I:%M:%S %p %d/%m/%Y')
 
 
 def get_username(update: Update, context: CallbackContext):
+    """Gets Username of a person
+
+    Returns:
+        username
+    """
     chat_id = update.message.chat_id  # Channel ID of the group
     user_id = update.message.from_user.id  # User ID of the person
     username = context.bot.getChatMember(chat_id, user_id).user.username
@@ -19,6 +29,8 @@ def get_username(update: Update, context: CallbackContext):
 
 
 def print_line():
+    """Writes a small line seperator in logs.txt
+    """
     print("-------------", file=open(C.LOG_FILE, 'a+'))
 
 
@@ -36,7 +48,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     token = str(message[0]+"inr").lower()
     print_line()
     print(f"Alert Number: {ALERT_NUMBER}", file=open(C.LOG_FILE, 'a+'))
-    print(f"Alert Plus(Envoked): {get_time()}", file=open(
+    print(f"Alert Plus(Invoked): {get_time()}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Executed By: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
@@ -99,7 +111,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     token = str(message[0]+"inr").lower()
     print_line()
     print(f"Alert Number: {ALERT_NUMBER}", file=open(C.LOG_FILE, 'a+'))
-    print(f"Alert Minus(Envoked): {get_time()}", file=open(
+    print(f"Alert Minus(Invoked): {get_time()}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Executed By: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
@@ -175,7 +187,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         update: This object represents an incoming update.
         context: This is a context object error handler.
     """
-    if token == None:
+    if token is None:
         token = update.message.text[:-4].lower()
     tokeninr = token + "inr"
     tokenusd = token + "usdt"
@@ -183,7 +195,8 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
     print(f"Command: {token}rate", file=open(C.LOG_FILE, 'a+'))
     print(f"Time: {get_time()}", file=open(C.LOG_FILE, 'a+'))
     print(f"Token: {token.upper()}", file=open(C.LOG_FILE, 'a+'))
-    print(f"User: {get_username(update, context)}", file=open(C.LOG_FILE, 'a+'))
+    print(f"User: {get_username(update, context)}",
+          file=open(C.LOG_FILE, 'a+'))
     try:
         rate = get_rate()
         if rate == -1:
@@ -212,6 +225,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
     rate_text = Template(C.RATE_TEXT_USD).substitute(
         token=token.upper(), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
     update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
+    return 0
 
 
 def all_rate(update: Update, context: CallbackContext) -> int:
@@ -223,7 +237,8 @@ def all_rate(update: Update, context: CallbackContext) -> int:
     print_line()
     print("Command: All Rates", file=open(C.LOG_FILE, 'a+'))
     print(f"Time: {get_time()}", file=open(C.LOG_FILE, 'a+'))
-    print(f"User: {get_username(update, context)}\n", file=open(C.LOG_FILE, 'a+'))
+    print(f"User: {get_username(update, context)}\n",
+          file=open(C.LOG_FILE, 'a+'))
     inrtokens = ["btc", "matic", "eth", "hbar",
                  "doge", "xrp", "ada", "xlm", "link", "trx"]
     usdttokens = ["btc", "matic", "eth", "hbar",
@@ -240,3 +255,4 @@ def all_rate(update: Update, context: CallbackContext) -> int:
         token_rate = rate[tokenusdt]['last']
         message = message + token.upper() + ": " + token_rate + " USDT\n"
     update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+    return 0

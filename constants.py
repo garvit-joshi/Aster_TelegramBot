@@ -1,6 +1,6 @@
-LOG_FILE = "logs.txt"
+LOG_FILE = "logs.txt"  # Log File
 
-ALERT_COUNT = 0   #Unique Alert No. for every Alert
+ALERT_COUNT = 0  # Unique Alert No. for every Alert
 
 RATE_TEXT_INR = """
 ***Token Rate $token/INR***
@@ -79,12 +79,4 @@ Hey there $name,
 You can find my Source code [here](https://github.com/garvit-joshi/Aster_TelegramBot).
 In case of bottlenecks please feel free to message [@garvit_joshi9](t.me/garvit_joshi9).
 Happy Coding !! \U0001F60E
-"""
-
-ERROR_OWNER = """
-Sorry, The command can only be executed by owners.
-"""
-
-ERROR_BRODCAST_AGAIN = """
-Rates are being fetched
 """

@@ -1,6 +1,6 @@
 from string import Template
-from datetime import datetime
 import secrets as keys
+import re
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -10,7 +10,6 @@ from telegram.ext import (
 )
 from telegram import Update, ParseMode
 import constants as C
-import re
 import rate as R
 
 
