@@ -13,8 +13,12 @@ import constants as C
 import re
 import rate as R
 
-print("Bot Started...")
-print(f"\n\nBot Started at {datetime.now()}\n", file=open(C.LOG_FILE, 'a+'))
+
+print("\n\n\n", file=open(C.LOG_FILE, 'a+'))
+R.print_line()
+R.print_line()
+print("Bot Started...\n")
+print(f"Bot Started at {R.get_time()}", file=open(C.LOG_FILE, 'a+'))
 
 
 def welcome_user(update: Update, context: CallbackContext) -> None:
@@ -28,7 +32,8 @@ def welcome_user(update: Update, context: CallbackContext) -> None:
         new_user = new_user.first_name
         welcome_message = "Welcome " + new_user
         context.bot.send_message(chat_id, welcome_message)
-        print(f"Welcome user at {datetime.now()} User: {new_user}", file=open(
+        R.print_line()
+        print(f"Welcome user at {R.get_time()} \nUser: {R.get_username(update, context)}", file=open(
             C.LOG_FILE, 'a+'))
 
 

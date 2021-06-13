@@ -1,5 +1,7 @@
 LOG_FILE = "logs.txt"
 
+ALERT_COUNT = 0   #Unique Alert No. for every Alert
+
 RATE_TEXT_INR = """
 ***Token Rate $token/INR***
 ***Rate:*** $rate INR
@@ -9,31 +11,34 @@ RATE_TEXT_INR = """
 ***Time:*** $time
 """
 
-ALERT_MINUS_EXECUTED = """
-***Alert Executed***
+ALERT_PLUS_SET = """
+***Alert $token***
+***Alert Number: $ano***
 Latest $token price: $lprice INR
-Percentage Decreased: $percentage%
+Alert when $token >= $aprice INR
+Percentage Increase: $percentage%
 """
 
+ALERT_PLUS_EXECUTED = """
+***Alert Executed***
+***Alert Number: $ano***
+Latest $token price: $lprice INR
+Percentage Increased: $percentage%
+"""
 
 ALERT_MINUS_SET = """
 ***Alert $token***
+***Alert Number: $ano***
 Latest $token price: $lprice INR
 Alert when $token <= $aprice INR
 Percentage Decrease: $percentage%
 """
 
-ALERT_PLUS_EXECUTED = """
+ALERT_MINUS_EXECUTED = """
 ***Alert Executed***
+***Alert Number: $ano***
 Latest $token price: $lprice INR
-Percentage Increased: $percentage%
-"""
-
-ALERT_PLUS_SET = """
-***Alert $token***
-Latest $token price: $lprice INR
-Alert when $token >= $aprice INR
-Percentage Increase: $percentage%
+Percentage Decreased: $percentage%
 """
 
 RATE_TEXT_USD = """
@@ -55,13 +60,16 @@ Not sure what you are talking about... \U0001F928
 
 HELP_TEXT = """
 Hey There!
-My name is Aster. Aster comes from the ancient Greek word ἀστήρ (astḗr), meaning "star".
+My name is Aster. Aster comes from the ancient Greek word ἀστήρ (astḗr), meaning "star".\n
 Currently, I am in Development. Some commands that I support:
-1. /start
-2. /help
-3. /source
-4. Type Coin Name with INR at last
-As I am an Open Source Project, You can contribute to my development.
+1. /start\n
+2. /help\n
+3. /source\n
+4. /all\_rates\n
+5. Type Coin Name with RATE at last. eg, btcrate\n
+6. Alert eg, (btc 8 -): Alert when BTC rate Decreases by 8%.\n
+7. Alert eg, (matic 8 +): Alert when MATIC rate increases my 8%.\n\n
+As I am an Open Source Project, You can contribute to my development.\n
 Link: [here](https://github.com/garvit-joshi/Aster_TelegramBot)
 I am learning new things everyday. \U0001F60E
 """
