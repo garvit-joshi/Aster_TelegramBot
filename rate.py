@@ -53,6 +53,11 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     print(f"Executed By: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
+    if C.ALERT_COUNT > 3:
+        update.message.reply_text(C.OOPS_NOT_POSSIBLE,
+                                  file=open(C.LOG_FILE, 'a+'))
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
+        return -1
     try:
         percentage = float(message[1])
         if percentage <= 0:
@@ -61,14 +66,17 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     except ValueError:
         print("Remarks: Value Error\n", file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(C.OOPS_WRONG_FORMAT)
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     except TypeError:
         message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER} Terminated.\n"
         print(message, file=open(C.LOG_FILE, 'a+'))
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     except:
         print("Remarks: NOT A TOKEN\n", file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(C.OOPS_404)
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     print("", file=open(C.LOG_FILE, 'a+'))
     expected_rate = round(current_rate + (current_rate/100*percentage), 2)
@@ -83,15 +91,18 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
             print_line()
             print(message, file=open(C.LOG_FILE, 'a+'))
             update.message.reply_text(message)
+            C.ALERT_COUNT = C.ALERT_COUNT - 1
+            return -1
         if current_rate >= expected_rate:
             message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
-                token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
+                ano=ALERT_NUMBER, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
             update.message.reply_text(
                 message_executed, parse_mode=ParseMode.MARKDOWN)
             print_line()
-            print(f"Alert Number: {ALERT_NUMBER}")
+            print(f"Alert Number: {ALERT_NUMBER}", file=open(C.LOG_FILE, 'a+'))
             print(f"Alert Plus(Executed): {get_time()}\n", file=open(
                 C.LOG_FILE, 'a+'))
+            C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
         sleep(10)
     return 0
@@ -116,6 +127,11 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     print(f"Executed By: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
+    if C.ALERT_COUNT > 3:
+        update.message.reply_text(
+            C.OOPS_NOT_POSSIBLE, file=open(C.LOG_FILE, 'a+'))
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
+        return -1
     try:
         percentage = float(message[1])
         if percentage <= 0:
@@ -124,15 +140,18 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     except ValueError:
         print("Remarks: Value Error\n", file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(C.OOPS_WRONG_FORMAT)
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     except TypeError:
         message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER} Terminated.\n"
         print(message, file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(message)
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     except:
         print("Remarks: NOT A TOKEN\n", file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(C.OOPS_404)
+        C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     print("", file=open(C.LOG_FILE, 'a+'))
     expected_rate = round(current_rate - (current_rate/100*percentage), 2)
@@ -147,15 +166,18 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
             print_line()
             print(message, file=open(C.LOG_FILE, 'a+'))
             update.message.reply_text(message)
+            C.ALERT_COUNT = C.ALERT_COUNT - 1
+            return -1
         if current_rate <= expected_rate:
-            message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(ano=ALERT_NUMBER,
-                                                                           token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
+            message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(
+                ano=ALERT_NUMBER, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
             update.message.reply_text(
                 message_executed, parse_mode=ParseMode.MARKDOWN)
             print_line()
-            print(f"Alert Number: {ALERT_NUMBER}")
+            print(f"Alert Number: {ALERT_NUMBER}", file=open(C.LOG_FILE, 'a+'))
             print(f"Alert Minus(Executed): {get_time()}\n", file=open(
                 C.LOG_FILE, 'a+'))
+            C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
         sleep(10)
     return 0

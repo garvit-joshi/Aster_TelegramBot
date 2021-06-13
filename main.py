@@ -82,10 +82,10 @@ def main():
     dispatch.add_handler(CommandHandler("start", start_command))
     dispatch.add_handler(MessageHandler(Filters.regex(
         re.compile('RATE$', re.IGNORECASE)), R.rate_command, run_async=True))
-    dispatch.add_handler(MessageHandler(Filters.regex(
-        re.compile('\+$')), R.alert_plus, run_async=True))
-    dispatch.add_handler(MessageHandler(Filters.regex(
-        re.compile('-$')), R.alert_minus, run_async=True))
+    dispatch.add_handler(MessageHandler(
+        Filters.regex(r'\+$'), R.alert_plus, run_async=True))
+    dispatch.add_handler(MessageHandler(
+        Filters.regex(r'-$'), R.alert_minus, run_async=True))
     dispatch.add_handler(CommandHandler("source", source_command))
     dispatch.add_handler(CommandHandler("all_rates", R.all_rate))
     dispatch.add_handler(CommandHandler("help", help_command))
