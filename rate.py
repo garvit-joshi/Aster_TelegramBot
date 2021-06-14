@@ -53,7 +53,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     print(f"Executed By: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
-    if C.ALERT_COUNT > 3:
+    if C.ALERT_COUNT > 6:
         update.message.reply_text(C.OOPS_NOT_POSSIBLE,
                                   file=open(C.LOG_FILE, 'a+'))
         C.ALERT_COUNT = C.ALERT_COUNT - 1
@@ -127,7 +127,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     print(f"Executed By: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
-    if C.ALERT_COUNT > 3:
+    if C.ALERT_COUNT > 6:
         update.message.reply_text(
             C.OOPS_NOT_POSSIBLE, file=open(C.LOG_FILE, 'a+'))
         C.ALERT_COUNT = C.ALERT_COUNT - 1

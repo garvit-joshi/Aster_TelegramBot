@@ -55,7 +55,7 @@ OOPS_404 = """
 """
 
 OOPS_NOT_POSSIBLE = """
-Oops! Only Three alerts concurrent possible kid...
+Oops! Only six concurrent alerts possible kid...
 """
 
 OOPS_WRONG_FORMAT = """

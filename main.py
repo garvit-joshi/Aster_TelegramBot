@@ -71,7 +71,7 @@ def main():
     """
 
     # Create the Updater and pass it our bot's token.
-    updater = Updater(keys.API_KEY, use_context=True)
+    updater = Updater(keys.API_KEY, use_context=True, workers=8)
 
     # Get the dispatcher to register handlers
     dispatch = updater.dispatcher
