@@ -10,6 +10,7 @@ logs.txt
 DogeRate.xlsx
 DogeRate.txt
 hello.py
+*.vscode
 
 # C extensions
 *.so

@@ -54,8 +54,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
     if C.ALERT_COUNT > 6:
-        update.message.reply_text(C.OOPS_NOT_POSSIBLE,
-                                  file=open(C.LOG_FILE, 'a+'))
+        update.message.reply_text(C.OOPS_NOT_POSSIBLE)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     try:
@@ -71,6 +70,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     except TypeError:
         message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER} Terminated.\n"
         print(message, file=open(C.LOG_FILE, 'a+'))
+        update.message.reply_text(message)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     except:
