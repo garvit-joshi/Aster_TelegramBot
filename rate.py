@@ -3,7 +3,7 @@ from time import sleep
 from datetime import datetime
 import requests
 from telegram.ext import CallbackContext
-from telegram import ParseMode, Update
+from telegram import ParseMode, Update, message
 import constants as C
 
 
@@ -28,6 +28,21 @@ def get_username(update: Update, context: CallbackContext):
     return username
 
 
+def cancel_alert(update: Update, context: CallbackContext):
+    """Cancels the alerts
+    """
+    C.CANCEL_ALERT_FLAG = 1
+    message = "Alerts will be terminated withing 20 sec."
+    print_line()
+    print("Command: Cancel Alerts", file=open(C.LOG_FILE, 'a+'))
+    print(f"User: {get_username(update, context)}",
+          file=open(C.LOG_FILE, 'a+'))
+    update.message.reply_text(message)
+    sleep(20)       # Sleep until All alerts are terminated.
+    C.CANCEL_ALERT_FLAG = 0
+    print("", file=open(C.LOG_FILE, 'a+'))
+
+
 def print_line():
     """Writes a small line seperator in logs.txt
     """
@@ -50,11 +65,12 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     print(f"Alert Number: {ALERT_NUMBER}", file=open(C.LOG_FILE, 'a+'))
     print(f"Alert Plus(Invoked): {get_time()}", file=open(
         C.LOG_FILE, 'a+'))
-    print(f"Executed By: {get_username(update, context)}", file=open(
+    print(f"User: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
     if C.ALERT_COUNT > 6:
         update.message.reply_text(C.OOPS_NOT_POSSIBLE)
+        print(f"Remarks: No More alerts possible", file=open(C.LOG_FILE, 'a+'))
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
     try:
@@ -84,6 +100,11 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
     update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
     while True:
+        if C.CANCEL_ALERT_FLAG == 1:
+            message = f"Alert Number: {ALERT_NUMBER} Cancelled"
+            update.message.reply_text(message)
+            C.ALERT_COUNT = C.ALERT_COUNT - 1
+            return 0
         try:
             current_rate = float(get_rate()[token]['last'])
         except TypeError:
@@ -124,7 +145,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     print(f"Alert Number: {ALERT_NUMBER}", file=open(C.LOG_FILE, 'a+'))
     print(f"Alert Minus(Invoked): {get_time()}", file=open(
         C.LOG_FILE, 'a+'))
-    print(f"Executed By: {get_username(update, context)}", file=open(
+    print(f"User: {get_username(update, context)}", file=open(
         C.LOG_FILE, 'a+'))
     print(f"Text: {message}", file=open(C.LOG_FILE, 'a+'))
     if C.ALERT_COUNT > 6:
@@ -159,6 +180,11 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
     update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
     while True:
+        if C.CANCEL_ALERT_FLAG == 1:
+            message = f"Alert Number: {ALERT_NUMBER} Cancelled!"
+            update.message.reply_text(message)
+            C.ALERT_COUNT = C.ALERT_COUNT - 1
+            return 0
         try:
             current_rate = float(get_rate()[token]['last'])
         except TypeError:

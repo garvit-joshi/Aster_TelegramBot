@@ -17,7 +17,7 @@ print("\n\n\n", file=open(C.LOG_FILE, 'a+'))
 R.print_line()
 R.print_line()
 print("Bot Started...\n")
-print(f"Bot Started at {R.get_time()}", file=open(C.LOG_FILE, 'a+'))
+print(f"Bot Started at {R.get_time()}\n", file=open(C.LOG_FILE, 'a+'))
 
 
 def welcome_user(update: Update, context: CallbackContext) -> None:
@@ -87,6 +87,8 @@ def main():
     dispatch.add_handler(MessageHandler(
         Filters.regex(r'-$'), R.alert_minus, run_async=True))
     dispatch.add_handler(CommandHandler("source", source_command))
+    dispatch.add_handler(CommandHandler(
+        "cancel_alerts", R.cancel_alert, run_async=True))
     dispatch.add_handler(CommandHandler("all_rates", R.all_rate))
     dispatch.add_handler(CommandHandler("help", help_command))
 
