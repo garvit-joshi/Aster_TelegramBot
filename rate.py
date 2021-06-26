@@ -108,12 +108,10 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         try:
             current_rate = float(get_rate()[token]['last'])
         except TypeError:
-            message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER} Terminated."
+            message = f"Alert Number:{ALERT_NUMBER}\nWazirX not responding!!"
             print_line()
             print(message, file=open(C.LOG_FILE, 'a+'))
-            update.message.reply_text(message)
-            C.ALERT_COUNT = C.ALERT_COUNT - 1
-            return -1
+            sleep(60)
         if current_rate >= expected_rate:
             message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
                 ano=ALERT_NUMBER, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
@@ -188,12 +186,10 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
         try:
             current_rate = float(get_rate()[token]['last'])
         except TypeError:
-            message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER} Terminated."
+            message = f"Alert Number:{ALERT_NUMBER}\nWazirX not responding!!"
             print_line()
             print(message, file=open(C.LOG_FILE, 'a+'))
-            update.message.reply_text(message)
-            C.ALERT_COUNT = C.ALERT_COUNT - 1
-            return -1
+            sleep(60)
         if current_rate <= expected_rate:
             message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(
                 ano=ALERT_NUMBER, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
