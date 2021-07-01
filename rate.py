@@ -283,7 +283,7 @@ def all_rate(update: Update, context: CallbackContext) -> int:
     print(f"Time: {get_time()}", file=open(C.LOG_FILE, 'a+'))
     print(f"User: {get_username(update, context)}\n",
           file=open(C.LOG_FILE, 'a+'))
-    inrtokens = ["btc", "matic", "eth", "hbar",
+    inrtokens = ["btc", "matic", "eth", "hbar", "dock",
                  "doge", "xrp", "ada", "xlm", "link", "trx"]
     usdttokens = ["btc", "matic", "eth", "hbar",
                   "doge", "xrp", "ada", "xlm", "link", "trx", "xmr", "theta", "tfuel"]

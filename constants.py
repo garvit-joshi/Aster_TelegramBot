@@ -1,6 +1,3 @@
-from rate import cancel_alert
-
-
 LOG_FILE = "logs.txt"  # Log File
 
 ALERT_COUNT = 0  # Unique Alert No. for every Alert
