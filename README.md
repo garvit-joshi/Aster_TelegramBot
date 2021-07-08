@@ -16,15 +16,16 @@ pip install -r requirements.txt
 ```
 This will install all the project dependencies.
 
-**3. Configure Missing Files:**
+**3. Configure Bot Key:**
 
-**File: secrets.py**
+**File: secrets.ini**
 ```bash
-echo "API_KEY = 'YOUR_BOT_API_KEY'" > secrets.py
+echo "[KEYS]\nAPI_KEY = 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" > secrets.ini
 ```
-A file ```secrets.py``` is missing as it contains a token to access the HTTP API of [Aster](t.me/Aster_Robot). The file is structured in this way: 
-```python
-API_KEY = 'YOUR_BOT_API_KEY'
+A file ```secrets.ini``` is missing as it contains a token to access the HTTP API of [Aster](t.me/Aster_Robot). The file is structured in this way: 
+```
+[KEYS]
+API_KEY = 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
 ```
 
 **4. :tada: Run the bot:**

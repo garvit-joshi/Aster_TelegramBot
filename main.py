@@ -1,6 +1,6 @@
 from string import Template
-import secrets as keys
 import re
+import configparser
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -69,9 +69,11 @@ def source_command(update: Update, context: CallbackContext) -> None:
 def main():
     """Main function responsible for starting the bot and listening to commands.
     """
+    config = configparser.ConfigParser()
+    config.read('secrets.ini')
 
     # Create the Updater and pass it our bot's token.
-    updater = Updater(keys.API_KEY, use_context=True, workers=8)
+    updater = Updater(token=config['KEYS']['API_KEY'], use_context=True, workers=8)
 
     # Get the dispatcher to register handlers
     dispatch = updater.dispatcher

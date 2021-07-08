@@ -74,7 +74,7 @@ Currently, I am in Development. Some commands that I support:
 4. /all\_rates\n
 5. Type Coin Name with RATE at last. eg, btcrate\n
 6. Alert eg, (btc 8 -): Alert when BTC rate Decreases by 8%.\n
-7. Alert eg, (matic 8 +): Alert when MATIC rate increases my 8%.\n\n
+7. Alert eg, (matic 8 +): Alert when MATIC rate increases by 8%.\n\n
 As I am an Open Source Project, You can contribute to my development.\n
 Link: [here](https://github.com/garvit-joshi/Aster_TelegramBot)
 I am learning new things everyday. \U0001F60E
