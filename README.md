@@ -1,6 +1,9 @@
 # Aster_TelegramBot
 Aster - A Telegram Bot for WazirX Crypto Exachange Analysis
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/garvit-joshi/Aster_TelegramBot)
+
+
 ## :zap: Installation
 **1. Clone this repo by running either of the below commands.**
 
