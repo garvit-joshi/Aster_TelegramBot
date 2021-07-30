@@ -66,6 +66,33 @@ def source_command(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
 
 
+def send_logs(update: Update, context: CallbackContext) -> None:
+    """Sends Logs
+    Keyword arguments:
+        update : This object represents an incoming update.
+        context : This is a context object error handler.
+    """
+    chat_id = update.message.chat_id
+    username = R.get_username(update, context)
+    R.print_line()
+    print(f"Command: Get Logs", file=open(C.LOG_FILE, 'a+'))
+    print(f"Time: {R.get_time()}", file=open(C.LOG_FILE, 'a+'))
+    print(f"User: {username}", file=open(C.LOG_FILE, 'a+'))
+    if username == "garvit_joshi9":  # Sent from Developer
+        try:
+            with open(C.LOG_FILE, "rb") as file:
+                context.bot.send_document(
+                    chat_id=chat_id, document=file, filename=C.LOG_FILE)
+        except Exception as e:
+            print(f"Remarks: Error with File logs", file=open(C.LOG_FILE, 'a+'))
+            print(f"{e}", file=open(C.LOG_FILE, 'a+'))
+            update.message.reply_text("Error with logs file.")
+    else:
+        print(f"Remarks: Not a Developer", file=open(C.LOG_FILE, 'a+'))
+        update.message.reply_text("Sorry!! This command can only be executed by developer")
+    print(f"", file=open(C.LOG_FILE, 'a+'))
+
+
 def main():
     """Main function responsible for starting the bot and listening to commands.
     """
@@ -73,7 +100,8 @@ def main():
     config.read('secrets.ini')
 
     # Create the Updater and pass it our bot's token.
-    updater = Updater(token=config['KEYS']['API_KEY'], use_context=True, workers=8)
+    updater = Updater(token=config['KEYS']
+                      ['API_KEY'], use_context=True, workers=8)
 
     # Get the dispatcher to register handlers
     dispatch = updater.dispatcher
@@ -93,6 +121,8 @@ def main():
         "cancel_alerts", R.cancel_alert, run_async=True))
     dispatch.add_handler(CommandHandler("all_rates", R.all_rate))
     dispatch.add_handler(CommandHandler("help", help_command))
+    dispatch.add_handler(CommandHandler(
+        "get_logs", send_logs, run_async=True))
 
     # Start the Bot
     updater.start_polling()
