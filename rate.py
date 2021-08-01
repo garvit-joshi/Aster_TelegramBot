@@ -108,8 +108,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         try:
             current_rate = float(get_rate()[token]['last'])
         except TypeError:
-            message = f"Alert Number:{ALERT_NUMBER}\nWazirX not responding!!"
-            print_line()
+            message = f"Alert Number:{ALERT_NUMBER}\nWazirX not responding!!\n"
             print(message, file=open(C.LOG_FILE, 'a+'))
             sleep(10)
         if current_rate >= expected_rate:
@@ -186,8 +185,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
         try:
             current_rate = float(get_rate()[token]['last'])
         except TypeError:
-            message = f"Alert Number:{ALERT_NUMBER}\nWazirX not responding!!"
-            print_line()
+            message = f"Alert Number:{ALERT_NUMBER}\nWazirX not responding!!\n"
             print(message, file=open(C.LOG_FILE, 'a+'))
             sleep(10)
         if current_rate <= expected_rate:
@@ -218,6 +216,7 @@ def get_rate():
             C.LOG_FILE, 'a+'))
         return -1
     if wazirx_request.status_code != 200:
+        print_line()
         print('GET /tasks/ {}'.format(wazirx_request.status_code), file=open(
             C.LOG_FILE, 'a+'))
         return -1
