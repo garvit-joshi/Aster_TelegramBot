@@ -4,6 +4,8 @@ ALERT_COUNT = 0  # Unique Alert No. for every Alert
 
 CANCEL_ALERT_FLAG = 0
 
+ERROR_PRIVILEGE = "Sorry!! This command can only be executed by a developer"
+
 RATE_TEXT_INR = """
 ***Token Rate $token/INR***
 ***Rate:*** $rate INR

@@ -31,12 +31,16 @@ def get_username(update: Update, context: CallbackContext):
 def cancel_alert(update: Update, context: CallbackContext):
     """Cancels the alerts
     """
-    C.CANCEL_ALERT_FLAG = 1
-    message = "Alerts will be terminated withing 20 sec."
     print_line()
     print("Command: Cancel Alerts", file=open(C.LOG_FILE, 'a+'))
     print(f"User: {get_username(update, context)}",
           file=open(C.LOG_FILE, 'a+'))
+    if (get_username(update, context) != "garvit_joshi9"):
+        print(f"Remarks: Not a Developer\n", file=open(C.LOG_FILE, 'a+'))
+        update.message.reply_text(C.ERROR_PRIVILEGE)
+        return -1
+    C.CANCEL_ALERT_FLAG = 1
+    message = "Alerts will be terminated withing 20 sec."
     update.message.reply_text(message)
     sleep(20)       # Sleep until All alerts are terminated.
     C.CANCEL_ALERT_FLAG = 0

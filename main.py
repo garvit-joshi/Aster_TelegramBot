@@ -89,7 +89,7 @@ def send_logs(update: Update, context: CallbackContext) -> None:
             update.message.reply_text("Error with logs file.")
     else:
         print(f"Remarks: Not a Developer", file=open(C.LOG_FILE, 'a+'))
-        update.message.reply_text("Sorry!! This command can only be executed by developer")
+        update.message.reply_text(C.ERROR_PRIVILEGE)
     print(f"", file=open(C.LOG_FILE, 'a+'))
 
 
