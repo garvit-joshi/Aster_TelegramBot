@@ -1,5 +1,7 @@
 LOG_FILE = "logs.txt"  # Log File
 
+WORKERS = 25
+
 ALERT_COUNT = 0  # No. of Alerts Running
 
 ALERT_NUMBER = 0  #Unique Alert Number
