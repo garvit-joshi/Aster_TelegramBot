@@ -40,10 +40,12 @@ def cancel_alert(update: Update, context: CallbackContext):
         update.message.reply_text(C.ERROR_PRIVILEGE)
         return -1
     C.CANCEL_ALERT_FLAG = 1
-    message = "Alerts will be terminated withing 20 sec."
+    message = "Alerts will be terminated withing 30 sec."
     update.message.reply_text(message)
-    sleep(20)       # Sleep until All alerts are terminated.
+    sleep(30)       # Sleep until All alerts are terminated.
     C.CANCEL_ALERT_FLAG = 0
+    C.ALERT_NUMBER = 0
+    C.ALERT_COUNT = 0
     print("", file=open(C.LOG_FILE, 'a+'))
 
 
