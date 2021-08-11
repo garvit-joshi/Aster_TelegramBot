@@ -124,7 +124,8 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
             update.message.reply_text(
                 message_executed, parse_mode=ParseMode.MARKDOWN)
             print_line()
-            print(f"Alert Number: {ALERT_NUMBER_}", file=open(C.LOG_FILE, 'a+'))
+            print(f"Alert Number: {ALERT_NUMBER_}",
+                  file=open(C.LOG_FILE, 'a+'))
             print(f"Alert Plus(Executed): {get_time()}\n", file=open(
                 C.LOG_FILE, 'a+'))
             C.ALERT_COUNT = C.ALERT_COUNT - 1
@@ -202,7 +203,8 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
             update.message.reply_text(
                 message_executed, parse_mode=ParseMode.MARKDOWN)
             print_line()
-            print(f"Alert Number: {ALERT_NUMBER_}", file=open(C.LOG_FILE, 'a+'))
+            print(f"Alert Number: {ALERT_NUMBER_}",
+                  file=open(C.LOG_FILE, 'a+'))
             print(f"Alert Minus(Executed): {get_time()}\n", file=open(
                 C.LOG_FILE, 'a+'))
             C.ALERT_COUNT = C.ALERT_COUNT - 1

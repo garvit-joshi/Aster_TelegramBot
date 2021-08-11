@@ -4,7 +4,7 @@ WORKERS = 25
 
 ALERT_COUNT = 0  # No. of Alerts Running
 
-ALERT_NUMBER = 0  #Unique Alert Number
+ALERT_NUMBER = 0  # Unique Alert Number
 
 CANCEL_ALERT_FLAG = 0
 

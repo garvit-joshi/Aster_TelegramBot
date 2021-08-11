@@ -11,6 +11,7 @@ from telegram.ext import (
 from telegram import Update, ParseMode
 import constants as C
 import rate as R
+from threading import Thread, Event
 
 
 print("\n\n\n", file=open(C.LOG_FILE, 'a+'))
@@ -84,7 +85,8 @@ def send_logs(update: Update, context: CallbackContext) -> None:
                 context.bot.send_document(
                     chat_id=chat_id, document=file, filename=C.LOG_FILE)
         except Exception as e:
-            print(f"Remarks: Error with File logs", file=open(C.LOG_FILE, 'a+'))
+            print(f"Remarks: Error with File logs",
+                  file=open(C.LOG_FILE, 'a+'))
             print(f"{e}", file=open(C.LOG_FILE, 'a+'))
             update.message.reply_text("Error with logs file.")
     else:
