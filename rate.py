@@ -6,6 +6,8 @@ from telegram.ext import CallbackContext
 from telegram import ParseMode, Update, message
 import constants as C
 
+wazirx_response = 0
+
 
 def get_time():
     """Gets Current Time
@@ -40,9 +42,9 @@ def cancel_alert(update: Update, context: CallbackContext):
         update.message.reply_text(C.ERROR_PRIVILEGE)
         return -1
     C.CANCEL_ALERT_FLAG = 1
-    message = "Alerts will be terminated withing 30 sec."
+    message = "Alerts will be terminated withing 10 sec."
     update.message.reply_text(message)
-    sleep(30)       # Sleep until All alerts are terminated.
+    sleep(10)       # Sleep until All alerts are terminated.
     C.CANCEL_ALERT_FLAG = 0
     C.ALERT_NUMBER = 0
     C.ALERT_COUNT = 0
@@ -84,7 +86,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         percentage = float(message[1])
         if percentage <= 0:
             raise ValueError
-        current_rate = float(get_rate()[token]['last'])
+        current_rate = float(wazirx_response[token]['last'])
     except ValueError:
         print("Remarks: Value Error\n", file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(C.OOPS_WRONG_FORMAT)
@@ -113,11 +115,10 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
-            current_rate = float(get_rate()[token]['last'])
+            current_rate = float(wazirx_response[token]['last'])
         except TypeError:
             message = f"Alert Number:{ALERT_NUMBER_}\nWazirX not responding!!\n"
             print(message, file=open(C.LOG_FILE, 'a+'))
-            sleep(10)
         if current_rate >= expected_rate:
             message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
                 ano=ALERT_NUMBER_, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
@@ -130,7 +131,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
                 C.LOG_FILE, 'a+'))
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
-        sleep(10)
+        sleep(6)
     return 0
 
 
@@ -163,7 +164,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
         percentage = float(message[1])
         if percentage <= 0:
             raise ValueError
-        current_rate = float(get_rate()[token]['last'])
+        current_rate = float(wazirx_response[token]['last'])
     except ValueError:
         print("Remarks: Value Error\n", file=open(C.LOG_FILE, 'a+'))
         update.message.reply_text(C.OOPS_WRONG_FORMAT)
@@ -192,11 +193,10 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
-            current_rate = float(get_rate()[token]['last'])
+            current_rate = float(wazirx_response[token]['last'])
         except TypeError:
             message = f"Alert Number:{ALERT_NUMBER_}\nWazirX not responding!!\n"
             print(message, file=open(C.LOG_FILE, 'a+'))
-            sleep(10)
         if current_rate <= expected_rate:
             message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(
                 ano=ALERT_NUMBER_, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
@@ -209,16 +209,16 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
                 C.LOG_FILE, 'a+'))
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
-        sleep(10)
+        sleep(6)
     return 0
 
 
 def get_rate():
     """GET request to WazirX api
 
-    Return:
-        Fetched Data in json Format
+    Updates Global Variable: wazirx_response
     """
+    global wazirx_response
     try:
         wazirx_request = requests.get('https://api.wazirx.com/api/v2/tickers')
     except:
@@ -230,7 +230,7 @@ def get_rate():
         print('GET /tasks/ {}'.format(wazirx_request.status_code), file=open(
             C.LOG_FILE, 'a+'))
         return -1
-    return wazirx_request.json()
+    wazirx_response = wazirx_request.json()
 
 
 def rate_command(update: Update, context: CallbackContext, token=None) -> int:
@@ -251,7 +251,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
     print(f"User: {get_username(update, context)}",
           file=open(C.LOG_FILE, 'a+'))
     try:
-        rate = get_rate()
+        rate = wazirx_response
         if rate == -1:
             update.message.reply_text(C.OOPS_404)
             return -1
@@ -283,7 +283,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
 
 def all_rate(update: Update, context: CallbackContext) -> int:
     try:
-        rate = get_rate()
+        rate = wazirx_response
     except:
         update.message.reply_text(C.OOPS_404)
         return -1

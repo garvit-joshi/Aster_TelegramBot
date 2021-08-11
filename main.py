@@ -1,5 +1,6 @@
 from string import Template
 import re
+from time import sleep
 import configparser
 from telegram.ext import (
     Updater,
@@ -18,7 +19,8 @@ print("\n\n\n", file=open(C.LOG_FILE, 'a+'))
 R.print_line()
 R.print_line()
 print("Bot Started...\n")
-print(f"Bot Started at {R.get_time()}\n", file=open(C.LOG_FILE, 'a+'))
+print(f"Bot Started at {R.get_time()}", file=open(C.LOG_FILE, 'a+'))
+print(f"Initializing tasks", file=open(C.LOG_FILE, 'a+'))
 
 
 def welcome_user(update: Update, context: CallbackContext) -> None:
@@ -95,6 +97,15 @@ def send_logs(update: Update, context: CallbackContext) -> None:
     print(f"", file=open(C.LOG_FILE, 'a+'))
 
 
+def rate_runner():
+    """Runs get_rate after every 5 sec.
+    """
+    print(f"Deamon Thread Initialized...\n", file=open(C.LOG_FILE, 'a+'))
+    while True:
+        R.get_rate()
+        sleep(3)
+
+
 def main():
     """Main function responsible for starting the bot and listening to commands.
     """
@@ -136,4 +147,6 @@ def main():
 
 
 if __name__ == "__main__":
+    rate_updater = Thread(target=rate_runner, daemon=True)
+    rate_updater.start()
     main()
