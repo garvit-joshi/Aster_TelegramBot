@@ -126,6 +126,8 @@ def main():
     dispatch.add_handler(MessageHandler(Filters.regex(
         re.compile('RATE$', re.IGNORECASE)), R.rate_command, run_async=True))
     dispatch.add_handler(MessageHandler(
+        Filters.regex(r'\+-$'), R.alert_plus_minus, run_async=True))
+    dispatch.add_handler(MessageHandler(
         Filters.regex(r'\+$'), R.alert_plus, run_async=True))
     dispatch.add_handler(MessageHandler(
         Filters.regex(r'-$'), R.alert_minus, run_async=True))
