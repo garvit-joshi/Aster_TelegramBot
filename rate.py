@@ -48,6 +48,7 @@ def cancel_alert(update: Update, context: CallbackContext):
     C.CANCEL_ALERT_FLAG = 0
     C.ALERT_NUMBER = 0
     C.ALERT_COUNT = 0
+    update.message.reply_text("All Alerts Cancelled!!")
     print("", file=open(C.LOG_FILE, 'a+'))
 
 
