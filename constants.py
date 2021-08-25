@@ -62,9 +62,7 @@ OOPS_404 = """
 404! Your token ain't here kid...
 """
 
-OOPS_NOT_POSSIBLE = """
-Oops! Only six concurrent alerts possible kid...
-"""
+OOPS_NOT_POSSIBLE = f"Oops! Only {WORKERS-4} concurrent alerts possible kid..."
 
 OOPS_WRONG_FORMAT = """
 Not sure what you are talking about... \U0001F928	

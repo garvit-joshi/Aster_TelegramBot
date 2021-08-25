@@ -15,12 +15,10 @@ import rate as R
 from threading import Thread, Event
 
 
-print("\n\n\n", file=open(C.LOG_FILE, 'a+'))
-R.print_line()
-R.print_line()
 print("Bot Started...\n")
-print(f"Bot Started at {R.get_time()}", file=open(C.LOG_FILE, 'a+'))
-print(f"Initializing tasks", file=open(C.LOG_FILE, 'a+'))
+log_text = f"Bot Started at {R.get_time()}\n"
+log_text = log_text + f"Initializing tasks\n"
+R.print_logs(log_text)
 
 
 def welcome_user(update: Update, context: CallbackContext) -> None:
@@ -34,9 +32,8 @@ def welcome_user(update: Update, context: CallbackContext) -> None:
         new_user = new_user.first_name
         welcome_message = "Welcome " + new_user
         context.bot.send_message(chat_id, welcome_message)
-        R.print_line()
-        print(f"Welcome user at {R.get_time()} \nUser: {R.get_username(update, context)}", file=open(
-            C.LOG_FILE, 'a+'))
+        log_text = f"Welcome user at {R.get_time()} \nUser: {R.get_username(update, context)}"
+        R.print_logs(log_text)
 
 
 def start_command(update: Update, context: CallbackContext) -> None:
@@ -77,30 +74,29 @@ def send_logs(update: Update, context: CallbackContext) -> None:
     """
     chat_id = update.message.chat_id
     username = R.get_username(update, context)
-    R.print_line()
-    print(f"Command: Get Logs", file=open(C.LOG_FILE, 'a+'))
-    print(f"Time: {R.get_time()}", file=open(C.LOG_FILE, 'a+'))
-    print(f"User: {username}", file=open(C.LOG_FILE, 'a+'))
+    log_text = "Command: Get Logs\n"
+    log_text = log_text + f"Time: {R.get_time()}\n"
+    log_text = log_text + f"User: {username}\n"
     if username == "garvit_joshi9":  # Sent from Developer
         try:
             with open(C.LOG_FILE, "rb") as file:
                 context.bot.send_document(
                     chat_id=chat_id, document=file, filename=C.LOG_FILE)
         except Exception as e:
-            print(f"Remarks: Error with File logs",
-                  file=open(C.LOG_FILE, 'a+'))
-            print(f"{e}", file=open(C.LOG_FILE, 'a+'))
+            log_text = log_text + f"Remarks: Error with File logs\n"
+            log_text = log_text + f"{e}\n"
             update.message.reply_text("Error with logs file.")
     else:
-        print(f"Remarks: Not a Developer", file=open(C.LOG_FILE, 'a+'))
+        log_text = log_text + f"Remarks: Not a Developer\n"
         update.message.reply_text(C.ERROR_PRIVILEGE)
-    print(f"", file=open(C.LOG_FILE, 'a+'))
+    R.print_logs(log_text)
 
 
 def rate_runner():
     """Runs get_rate after every 5 sec.
     """
-    print(f"Deamon Thread Initialized...\n", file=open(C.LOG_FILE, 'a+'))
+    log_text = f"Deamon Thread Initialized...\n"
+    R.print_logs(log_text)
     while True:
         R.get_rate()
         sleep(3)
