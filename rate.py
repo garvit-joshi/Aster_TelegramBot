@@ -96,11 +96,13 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         context: This is a context object error handler.
     """
     command = update.message.text
+    log_text = f"Command: {command}\n"
+    if command[0] == "/":
+        command = command[1:]
     if token is None:
         token = command[:-4].lower()
     tokeninr = token + "inr"
     tokenusd = token + "usdt"
-    log_text = f"Command: {command}\n"
     log_text = log_text + f"Time: {get_time()}\n"
     log_text = log_text + f"Token: {token.upper()}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
