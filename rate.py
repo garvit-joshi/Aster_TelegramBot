@@ -3,19 +3,21 @@ from time import sleep
 from datetime import datetime
 import requests
 from telegram.ext import CallbackContext
-from telegram import ParseMode, Update, message
+from telegram import ParseMode, Update
 import constants as C
 
 wazirx_response = 0
 
 
-def get_time():
+def get_time(update: Update = None):
     """Gets Current Time
 
     Returns:
         HH:MM:SS {AM/PM} DD/MM/YYYY
     """
-    return datetime.now().strftime('%I:%M:%S %p %d/%m/%Y')
+    if update is None:
+        return datetime.now().strftime('%I:%M:%S %p %d/%m/%Y')
+    return update.message.date.astimezone().strftime('%I:%M:%S %p %d/%m/%Y')
 
 
 def get_username(update: Update, context: CallbackContext):
@@ -72,6 +74,7 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
          0: All Alerts are cancelled
     """
     log_text = f"Command: Cancel Alerts\nUser: {get_username(update, context)}\n"
+    log_text = log_text + f"Time: {get_time(update)}\n"
     if (get_username(update, context) != "garvit_joshi9"):
         log_text = log_text + "Remarks: Not a Developer"
         update.message.reply_text(C.ERROR_PRIVILEGE)
@@ -103,7 +106,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         token = command[:-4].lower()
     tokeninr = token + "inr"
     tokenusd = token + "usdt"
-    log_text = log_text + f"Time: {get_time()}\n"
+    log_text = log_text + f"Time: {get_time(update)}\n"
     log_text = log_text + f"Token: {token.upper()}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     try:
@@ -151,7 +154,7 @@ def all_rate(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(C.OOPS_404)
         return -1
     log_text = "Command: All Rates\n"
-    log_text = log_text + f"Time: {get_time()}\n"
+    log_text = log_text + f"Time: {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     print_logs(log_text)
     inrtokens = ["btc", "matic", "eth", "hbar", "dock",
@@ -187,7 +190,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     message = message.split(" ")
     token = str(message[0]+"inr").lower()
     log_text = f"Alert Number: {ALERT_NUMBER_}\n"
-    log_text = log_text + f"Alert Plus(Invoked): {get_time()}\n"
+    log_text = log_text + f"Alert Plus(Invoked): {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     log_text = log_text + f"Text: {message}\n"
     if C.ALERT_COUNT > C.WORKERS-4:
@@ -266,7 +269,7 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
     message = message.split(" ")
     token = str(message[0]+"inr").lower()
     log_text = f"Alert Number: {ALERT_NUMBER_}\n"
-    log_text = log_text + f"Alert Plus-Minus(Invoked): {get_time()}\n"
+    log_text = log_text + f"Alert Plus-Minus(Invoked): {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     log_text = log_text + f"Text: {message}\n"
     if C.ALERT_COUNT > C.WORKERS-4:
@@ -360,7 +363,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     message = message.split(" ")
     token = str(message[0]+"inr").lower()
     log_text = f"Alert Number: {ALERT_NUMBER_}\n"
-    log_text = log_text + f"Alert Minus(Invoked): {get_time()}\n"
+    log_text = log_text + f"Alert Minus(Invoked): {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     log_text = log_text + f"Text: {message}\n"
     if C.ALERT_COUNT > C.WORKERS-4:

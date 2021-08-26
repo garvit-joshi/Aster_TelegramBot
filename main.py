@@ -75,7 +75,7 @@ def send_logs(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
     username = R.get_username(update, context)
     log_text = "Command: Get Logs\n"
-    log_text = log_text + f"Time: {R.get_time()}\n"
+    log_text = log_text + f"Time: {R.get_time(update)}\n"
     log_text = log_text + f"User: {username}\n"
     if username == "garvit_joshi9":  # Sent from Developer
         try:
