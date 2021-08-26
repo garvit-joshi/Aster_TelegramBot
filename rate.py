@@ -13,7 +13,7 @@ def get_time():
     """Gets Current Time
 
     Returns:
-        HH:MM:SS AM/PM DD/MM/YYYY
+        HH:MM:SS {AM/PM} DD/MM/YYYY
     """
     return datetime.now().strftime('%I:%M:%S %p %d/%m/%Y')
 
@@ -30,8 +30,46 @@ def get_username(update: Update, context: CallbackContext):
     return username
 
 
-def cancel_alert(update: Update, context: CallbackContext):
+def print_logs(message):
+    """Writes logs in logs.txt
+    """
+    line = "-------------\n"
+    message = line + message + line
+    print(message, file=open(C.LOG_FILE, 'a+'))
+
+
+def get_rate():
+    """GET request to WazirX api
+
+    Updates Global Variable: wazirx_response
+
+    Returns:
+        -1: If Not called by Developer
+         0: All Alerts are cancelled
+    """
+    global wazirx_response
+    try:
+        wazirx_request = requests.get('https://api.wazirx.com/api/v2/tickers')
+    except:
+        print("API Cannot be fetched", file=open(
+            C.LOG_FILE, 'a+'))
+        sleep(20)
+        return -1
+    if wazirx_request.status_code != 200:
+        log_text = 'GET /tasks/ {}\n'.format(wazirx_request.status_code)
+        log_text = log_text + get_time() + "\n"
+        print_logs(log_text)
+        sleep(20)
+        return -1
+    wazirx_response = wazirx_request.json()
+
+
+def cancel_alert(update: Update, context: CallbackContext) -> int:
     """Cancels the alerts
+
+    Returns:
+        -1: If Not called by Developer
+         0: All Alerts are cancelled
     """
     log_text = f"Command: Cancel Alerts\nUser: {get_username(update, context)}\n"
     if (get_username(update, context) != "garvit_joshi9"):
@@ -47,14 +85,89 @@ def cancel_alert(update: Update, context: CallbackContext):
     C.ALERT_NUMBER = 0
     C.ALERT_COUNT = 0
     update.message.reply_text("All Alerts Cancelled!!")
+    return 0
 
 
-def print_logs(message):
-    """Writes logs in logs.txt
+def rate_command(update: Update, context: CallbackContext, token=None) -> int:
+    """Reply with real time Token rate
+
+    Keyword arguments:
+        update: This object represents an incoming update.
+        context: This is a context object error handler.
     """
-    line = "-------------\n"
-    message = line + message + line
-    print(message, file=open(C.LOG_FILE, 'a+'))
+    if token is None:
+        token = update.message.text[:-4].lower()
+    tokeninr = token + "inr"
+    tokenusd = token + "usdt"
+    log_text = f"Command: {token}\n"
+    log_text = log_text + f"Time: {get_time()}\n"
+    log_text = log_text + f"Token: {token.upper()}\n"
+    log_text = log_text + f"User: {get_username(update, context)}\n"
+    try:
+        rate = wazirx_response
+        if rate == -1:
+            update.message.reply_text(C.OOPS_404)
+            return -1
+        nratei = rate[tokeninr]['last']
+        lratei = rate[tokeninr]['low']
+        hratei = rate[tokeninr]['high']
+        volumei = rate[tokeninr]['volume']
+        timei = datetime.fromtimestamp(
+            rate[tokeninr]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
+        nrateu = rate[tokenusd]['last']
+        lrateu = rate[tokenusd]['low']
+        hrateu = rate[tokenusd]['high']
+        volumeu = rate[tokenusd]['volume']
+        timeu = datetime.fromtimestamp(
+            rate[tokenusd]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
+    except:
+        log_text = log_text + "Remarks: NOT A TOKEN\n"
+        print_logs(log_text)
+        update.message.reply_text(C.OOPS_404)
+        return -1
+    print_logs(log_text)
+    rate_text = Template(C.RATE_TEXT_INR).substitute(
+        token=token.upper(), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
+    update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
+    rate_text = Template(C.RATE_TEXT_USD).substitute(
+        token=token.upper(), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
+    update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
+    return 0
+
+
+def all_rate(update: Update, context: CallbackContext) -> int:
+    """Replies with some famous token rates
+
+    Keyword arguments:
+        update: This object represents an incoming update.
+        context: This is a context object error handler.
+    """
+    try:
+        rate = wazirx_response
+    except:
+        update.message.reply_text(C.OOPS_404)
+        return -1
+    log_text = "Command: All Rates\n"
+    log_text = log_text + f"Time: {get_time()}\n"
+    log_text = log_text + f"User: {get_username(update, context)}\n"
+    print_logs(log_text)
+    inrtokens = ["btc", "matic", "eth", "hbar", "dock",
+                 "doge", "xrp", "ada", "xlm", "link", "trx"]
+    usdttokens = ["btc", "matic", "eth", "hbar",
+                  "doge", "xrp", "ada", "xlm", "link", "trx", "xmr", "theta", "tfuel"]
+    message = ""
+    for token in inrtokens:
+        tokeninr = token + "inr"
+        token_rate = rate[tokeninr]['last']
+        message = message + token.upper() + ": " + token_rate + " INR\n"
+    update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+    message = ""
+    for token in usdttokens:
+        tokenusdt = token + "usdt"
+        token_rate = rate[tokenusdt]['last']
+        message = message + token.upper() + ": " + token_rate + " USDT\n"
+    update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+    return 0
 
 
 def alert_plus(update: Update, context: CallbackContext) -> int:
@@ -306,99 +419,4 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
         sleep(6)
-    return 0
-
-
-def get_rate():
-    """GET request to WazirX api
-
-    Updates Global Variable: wazirx_response
-    """
-    global wazirx_response
-    try:
-        wazirx_request = requests.get('https://api.wazirx.com/api/v2/tickers')
-    except:
-        print("API Cannot be fetched", file=open(
-            C.LOG_FILE, 'a+'))
-        return -1
-    if wazirx_request.status_code != 200:
-        log_text = 'GET /tasks/ {}'.format(wazirx_request.status_code)
-        print(log_text)
-        return -1
-    wazirx_response = wazirx_request.json()
-
-
-def rate_command(update: Update, context: CallbackContext, token=None) -> int:
-    """Reply with real time Token rate
-
-    Keyword arguments:
-        update: This object represents an incoming update.
-        context: This is a context object error handler.
-    """
-    if token is None:
-        token = update.message.text[:-4].lower()
-    tokeninr = token + "inr"
-    tokenusd = token + "usdt"
-    log_text = f"Command: {token}\n"
-    log_text = log_text + f"Time: {get_time()}\n"
-    log_text = log_text + f"Token: {token.upper()}\n"
-    log_text = log_text + f"User: {get_username(update, context)}\n"
-    try:
-        rate = wazirx_response
-        if rate == -1:
-            update.message.reply_text(C.OOPS_404)
-            return -1
-        nratei = rate[tokeninr]['last']
-        lratei = rate[tokeninr]['low']
-        hratei = rate[tokeninr]['high']
-        volumei = rate[tokeninr]['volume']
-        timei = datetime.fromtimestamp(
-            rate[tokeninr]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
-        nrateu = rate[tokenusd]['last']
-        lrateu = rate[tokenusd]['low']
-        hrateu = rate[tokenusd]['high']
-        volumeu = rate[tokenusd]['volume']
-        timeu = datetime.fromtimestamp(
-            rate[tokenusd]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
-    except:
-        log_text = log_text + "Remarks: NOT A TOKEN\n"
-        print_logs(log_text)
-        update.message.reply_text(C.OOPS_404)
-        return -1
-    print_logs(log_text)
-    rate_text = Template(C.RATE_TEXT_INR).substitute(
-        token=token.upper(), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
-    update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
-    rate_text = Template(C.RATE_TEXT_USD).substitute(
-        token=token.upper(), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
-    update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
-    return 0
-
-
-def all_rate(update: Update, context: CallbackContext) -> int:
-    try:
-        rate = wazirx_response
-    except:
-        update.message.reply_text(C.OOPS_404)
-        return -1
-    log_text = "Command: All Rates\n"
-    log_text = log_text + f"Time: {get_time()}\n"
-    log_text = log_text + f"User: {get_username(update, context)}\n"
-    print_logs(log_text)
-    inrtokens = ["btc", "matic", "eth", "hbar", "dock",
-                 "doge", "xrp", "ada", "xlm", "link", "trx"]
-    usdttokens = ["btc", "matic", "eth", "hbar",
-                  "doge", "xrp", "ada", "xlm", "link", "trx", "xmr", "theta", "tfuel"]
-    message = ""
-    for token in inrtokens:
-        tokeninr = token + "inr"
-        token_rate = rate[tokeninr]['last']
-        message = message + token.upper() + ": " + token_rate + " INR\n"
-    update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
-    message = ""
-    for token in usdttokens:
-        tokenusdt = token + "usdt"
-        token_rate = rate[tokenusdt]['last']
-        message = message + token.upper() + ": " + token_rate + " USDT\n"
-    update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
     return 0
