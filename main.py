@@ -32,7 +32,7 @@ def welcome_user(update: Update, context: CallbackContext) -> None:
         new_user = new_user.first_name
         welcome_message = "Welcome " + new_user
         context.bot.send_message(chat_id, welcome_message)
-        log_text = f"Welcome user at {R.get_time()} \nUser: {R.get_username(update, context)}"
+        log_text = f"Welcome user at {R.get_time()} \nUser: {R.get_username(update, context)}\n"
         R.print_logs(log_text)
 
 
