@@ -12,7 +12,7 @@ from telegram.ext import (
 from telegram import Update, ParseMode
 import constants as C
 import rate as R
-from threading import Thread, Event
+from threading import Thread
 
 
 print("Bot Started...\n")

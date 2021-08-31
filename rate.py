@@ -29,6 +29,9 @@ def get_username(update: Update, context: CallbackContext):
     chat_id = update.message.chat_id  # Channel ID of the group
     user_id = update.message.from_user.id  # User ID of the person
     username = context.bot.getChatMember(chat_id, user_id).user.username
+    if username is None:
+        username = context.bot.getChatMember(chat_id, user_id).user.full_name
+        username = username + "(Name)"
     return username
 
 
@@ -76,7 +79,8 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
     log_text = f"Command: Cancel Alerts\nUser: {get_username(update, context)}\n"
     log_text = log_text + f"Time: {get_time(update)}\n"
     if (get_username(update, context) != "garvit_joshi9"):
-        log_text = log_text + "Remarks: Not a Developer"
+        log_text = log_text + "Remarks: Not a Developer\n"
+        print_logs(log_text)
         update.message.reply_text(C.ERROR_PRIVILEGE)
         return -1
     C.CANCEL_ALERT_FLAG = 1
@@ -109,35 +113,40 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
     log_text = log_text + f"Time: {get_time(update)}\n"
     log_text = log_text + f"Token: {token.upper()}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
+    token_flag = 0
+    rate = wazirx_response
+    if rate == -1:
+        update.message.reply_text(C.OOPS_404)
+        return -1
     try:
-        rate = wazirx_response
-        if rate == -1:
-            update.message.reply_text(C.OOPS_404)
-            return -1
         nratei = rate[tokeninr]['last']
         lratei = rate[tokeninr]['low']
         hratei = rate[tokeninr]['high']
         volumei = rate[tokeninr]['volume']
         timei = datetime.fromtimestamp(
             rate[tokeninr]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
+        rate_text = Template(C.RATE_TEXT_INR).substitute(token=token.upper(
+        ), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
+        update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
+    except:
+        token_flag = 1
+    try:
         nrateu = rate[tokenusd]['last']
         lrateu = rate[tokenusd]['low']
         hrateu = rate[tokenusd]['high']
         volumeu = rate[tokenusd]['volume']
         timeu = datetime.fromtimestamp(
             rate[tokenusd]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
+        rate_text = Template(C.RATE_TEXT_USD).substitute(token=token.upper(
+        ), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
+        update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
     except:
-        log_text = log_text + "Remarks: NOT A TOKEN\n"
-        print_logs(log_text)
-        update.message.reply_text(C.OOPS_404)
-        return -1
+        if token_flag == 1:
+            log_text = log_text + "Remarks: NOT A TOKEN\n"
+            print_logs(log_text)
+            update.message.reply_text(C.OOPS_404)
+            return -1
     print_logs(log_text)
-    rate_text = Template(C.RATE_TEXT_INR).substitute(
-        token=token.upper(), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
-    update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
-    rate_text = Template(C.RATE_TEXT_USD).substitute(
-        token=token.upper(), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
-    update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
     return 0
 
 
@@ -231,8 +240,9 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     while True:
         if C.CANCEL_ALERT_FLAG == 1:
             message = f"Alert Number: {ALERT_NUMBER_} Cancelled\n"
-            print_logs(message)
             update.message.reply_text(message)
+            message = message + f"User: {get_username(update, context)}\n"
+            print_logs(message)
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
@@ -314,8 +324,9 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
     while True:
         if C.CANCEL_ALERT_FLAG == 1:
             message = f"Alert Number: {ALERT_NUMBER_} Cancelled\n"
-            print_logs(message)
             update.message.reply_text(message)
+            message = message + f"User: {get_username(update, context)}\n"
+            print_logs(message)
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
@@ -405,8 +416,9 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     while True:
         if C.CANCEL_ALERT_FLAG == 1:
             message = f"Alert Number: {ALERT_NUMBER_} Cancelled\n"
-            print_logs(message)
             update.message.reply_text(message)
+            message = message + f"User: {get_username(update, context)}\n"
+            print_logs(message)
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
