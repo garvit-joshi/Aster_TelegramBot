@@ -35,12 +35,13 @@ def get_username(update: Update, context: CallbackContext):
     return username
 
 
-def print_logs(message):
+def print_logs(log_message):
     """Writes logs in logs.txt
     """
     line = "-------------\n"
-    message = line + message + line
-    print(message, file=open(C.LOG_FILE, 'a+'))
+    log_message = line + log_message + line
+    with open(C.LOG_FILE, 'a+', encoding='utf8') as log_file:
+        print(log_message, file=log_file)
 
 
 def get_rate():
@@ -78,7 +79,7 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
     """
     log_text = f"Command: Cancel Alerts\nUser: {get_username(update, context)}\n"
     log_text = log_text + f"Time: {get_time(update)}\n"
-    if (get_username(update, context) != "garvit_joshi9"):
+    if get_username(update, context) != "garvit_joshi9":
         log_text = log_text + "Remarks: Not a Developer\n"
         print_logs(log_text)
         update.message.reply_text(C.ERROR_PRIVILEGE)
@@ -252,7 +253,9 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
             print_logs(log_text)
         if current_rate >= expected_rate:
             message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
-                ano=ALERT_NUMBER_, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
+                ano=ALERT_NUMBER_, token=token.upper()[
+                    :-3], lprice=current_rate,
+                percentage=percentage)
             update.message.reply_text(
                 message_executed, parse_mode=ParseMode.MARKDOWN)
             log_text = f"Alert Number: {ALERT_NUMBER_}\n"
@@ -314,8 +317,8 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
     expected_rate_plus = round(current_rate + (current_rate/100*percentage), 2)
     expected_rate_minus = round(
         current_rate - (current_rate/100*percentage), 2)
-    message_set_plus = Template(C.ALERT_PLUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
-    ), lprice=current_rate, aprice=expected_rate_plus, percentage=percentage)
+    message_set_plus = Template(C.ALERT_PLUS_SET).substitute(
+        ano=ALERT_NUMBER_, token=token[:-3].upper(), lprice=current_rate, aprice=expected_rate_plus, percentage=percentage)
     message_set_minus = Template(C.ALERT_MINUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
     ), lprice=current_rate, aprice=expected_rate_minus, percentage=percentage)
     update.message.reply_text(message_set_plus, parse_mode=ParseMode.MARKDOWN)

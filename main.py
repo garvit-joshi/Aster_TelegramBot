@@ -2,6 +2,7 @@ from string import Template
 import re
 from time import sleep
 import configparser
+from threading import Thread
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -12,13 +13,12 @@ from telegram.ext import (
 from telegram import Update, ParseMode
 import constants as C
 import rate as R
-from threading import Thread
 
 
 print("Bot Started...\n")
-log_text = f"Bot Started at {R.get_time()}\n"
-log_text = log_text + f"Initializing tasks\n"
-R.print_logs(log_text)
+start_text = f"Bot Started at {R.get_time()}\n"
+start_text = start_text + f"Initializing tasks\n"
+R.print_logs(start_text)
 
 
 def welcome_user(update: Update, context: CallbackContext) -> None:
@@ -83,11 +83,11 @@ def send_logs(update: Update, context: CallbackContext) -> None:
                 context.bot.send_document(
                     chat_id=chat_id, document=file, filename=C.LOG_FILE)
         except Exception as e:
-            log_text = log_text + f"Remarks: Error with File logs\n"
+            log_text = log_text + "Remarks: Error with File logs\n"
             log_text = log_text + f"{e}\n"
             update.message.reply_text("Error with logs file.")
     else:
-        log_text = log_text + f"Remarks: Not a Developer\n"
+        log_text = log_text + "Remarks: Not a Developer\n"
         update.message.reply_text(C.ERROR_PRIVILEGE)
     R.print_logs(log_text)
 
@@ -95,7 +95,7 @@ def send_logs(update: Update, context: CallbackContext) -> None:
 def rate_runner():
     """Runs get_rate after every 5 sec.
     """
-    log_text = f"Deamon Thread Initialized...\n"
+    log_text = "Deamon Thread Initialized...\n"
     R.print_logs(log_text)
     while True:
         R.get_rate()
