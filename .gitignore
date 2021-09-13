@@ -9,7 +9,7 @@ env
 logs.txt
 DogeRate.xlsx
 DogeRate.txt
-hello.py
+test.py
 *.vscode
 
 # C extensions

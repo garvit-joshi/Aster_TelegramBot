@@ -57,13 +57,15 @@ def get_rate():
     try:
         wazirx_request = requests.get('https://api.wazirx.com/api/v2/tickers')
     except:
-        print("API Cannot be fetched", file=open(
-            C.LOG_FILE, 'a+'))
+        log_text = "API Cannot be fetched\n"
+        log_text = log_text + f"Time: {get_time()}\n"
+        print_logs(log_text)
         sleep(20)
         return -1
-    if wazirx_request.status_code != 200:
-        log_text = 'GET /tasks/ {}\n'.format(wazirx_request.status_code)
-        log_text = log_text + get_time() + "\n"
+    if wazirx_request.status_code == 200:
+        log_text = f"Status Code: {wazirx_request.status_code}\n"
+        log_text = log_text + str(wazirx_request.headers) + '\n'
+        log_text = log_text + f"Time: {get_time()}\n"
         print_logs(log_text)
         sleep(20)
         return -1
