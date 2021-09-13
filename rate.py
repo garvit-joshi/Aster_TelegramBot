@@ -62,7 +62,7 @@ def get_rate():
         print_logs(log_text)
         sleep(20)
         return -1
-    if wazirx_request.status_code == 200:
+    if wazirx_request.status_code != 200:
         log_text = f"Status Code: {wazirx_request.status_code}\n"
         log_text = log_text + str(wazirx_request.headers) + '\n'
         log_text = log_text + f"Time: {get_time()}\n"
