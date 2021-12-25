@@ -50,8 +50,8 @@ def get_rate():
     Updates Global Variable: wazirx_response
 
     Returns:
-        -1: If Not called by Developer
-         0: All Alerts are cancelled
+        -1: If API cannot be fetched successfully
+         0: If API was Successfully fetched
     """
     global wazirx_response
     try:
@@ -62,21 +62,18 @@ def get_rate():
         print_logs(log_text)
         sleep(20)
         return -1
-    if wazirx_request.status_code == 429:
+    if wazirx_request.status_code != 200:
         log_text = f"Status Code: {wazirx_request.status_code}\n"
         log_text = log_text + str(wazirx_request.headers) + '\n'
         log_text = log_text + f"Time: {get_time()}\n"
         print_logs(log_text)
-        sleep(600)
-        return -1
-    elif wazirx_request.status_code != 200:
-        log_text = f"Status Code: {wazirx_request.status_code}\n"
-        log_text = log_text + str(wazirx_request.headers) + '\n'
-        log_text = log_text + f"Time: {get_time()}\n"
-        print_logs(log_text)
-        sleep(20)
+        if wazirx_request.status_code in range(400,500):
+            sleep(600)
+        else:
+            sleep(30)
         return -1
     wazirx_response = wazirx_request.json()
+    return 0
 
 
 def cancel_alert(update: Update, context: CallbackContext) -> int:
