@@ -229,7 +229,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     except TypeError:
         message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER_} Terminated.\n"
         log_text = log_text + message
-        print(log_text)
+        print_log(log_text)
         update.message.reply_text(message)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
@@ -407,7 +407,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     except TypeError:
         message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER_} Terminated.\n"
         log_text = log_text + message
-        print(log_text)
+        print_logs(log_text)
         update.message.reply_text(message)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
