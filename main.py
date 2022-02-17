@@ -93,13 +93,13 @@ def send_logs(update: Update, context: CallbackContext) -> None:
 
 
 def rate_runner():
-    """Runs get_rate after every 5 sec.
+    """Runs get_rate after every C.WAZIRX_API_THRESHOLD sec.
     """
     log_text = "Deamon Thread Initialized...\n"
     R.print_logs(log_text)
     while True:
         R.get_rate()
-        sleep(3)
+        sleep(C.WAZIRX_API_THRESHOLD)
 
 
 def main():

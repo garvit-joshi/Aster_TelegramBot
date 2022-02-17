@@ -2,6 +2,8 @@ LOG_FILE = "logs.txt"  # Log File
 
 WORKERS = 25
 
+WAZIRX_API_THRESHOLD = 15   # Seconds PAUSE AFTER EVERY API CALL
+
 ALERT_COUNT = 0  # No. of Alerts Running
 
 ALERT_NUMBER = 0  # Unique Alert Number

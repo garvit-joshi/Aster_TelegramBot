@@ -99,6 +99,7 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
     C.ALERT_NUMBER = 0
     C.ALERT_COUNT = 0
     update.message.reply_text("All Alerts Cancelled!!")
+    C.WAZIRX_API_THRESHOLD = 15
     return 0
 
 
@@ -199,6 +200,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         -1: If Exceptions occours
         0:  Alert Executes
     """
+    C.WAZIRX_API_THRESHOLD = 3
     C.ALERT_COUNT = C.ALERT_COUNT + 1
     C.ALERT_NUMBER = C.ALERT_NUMBER + 1
     ALERT_NUMBER_ = C.ALERT_NUMBER
@@ -229,7 +231,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     except TypeError:
         message = f"WazirX not responding!!\nAlert Number:{ALERT_NUMBER_} Terminated.\n"
         log_text = log_text + message
-        print_log(log_text)
+        print_logs(log_text)
         update.message.reply_text(message)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
@@ -281,6 +283,7 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
         -1: If Exceptions occours
         0:  Alert Executes
     """
+    C.WAZIRX_API_THRESHOLD = 3
     C.ALERT_COUNT = C.ALERT_COUNT + 1
     C.ALERT_NUMBER = C.ALERT_NUMBER + 1
     ALERT_NUMBER_ = C.ALERT_NUMBER
@@ -376,6 +379,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
         -1: If Exceptions occours
         0:  Alert Executes
     """
+    C.WAZIRX_API_THRESHOLD = 3
     C.ALERT_COUNT = C.ALERT_COUNT + 1
     C.ALERT_NUMBER = C.ALERT_NUMBER + 1
     ALERT_NUMBER_ = C.ALERT_NUMBER
