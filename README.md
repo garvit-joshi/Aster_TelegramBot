@@ -19,6 +19,8 @@ pip install -r requirements.txt
 ```
 This will install all the project dependencies.
 
+Note: Recommended way is to first create a virtual environment and then install the dependencies.
+
 **3. Configure Bot Key:**
 
 **File: secrets.ini**
