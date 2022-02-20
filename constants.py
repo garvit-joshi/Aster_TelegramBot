@@ -2,7 +2,7 @@ LOG_FILE = "Main.log"  # Log File
 
 WORKERS = 25
 
-WAZIRX_API_THRESHOLD = 15   # Seconds PAUSE AFTER EVERY API CALL
+WAZIRX_API_THRESHOLD = 15  # Seconds PAUSE AFTER EVERY API CALL
 
 ALERT_COUNT = 0  # No. of Alerts Running
 
@@ -93,3 +93,32 @@ You can find my Source code [here](https://github.com/garvit-joshi/Aster_Telegra
 In case of bottlenecks please feel free to message [@garvit_joshi9](t.me/garvit_joshi9).
 Happy Coding !! \U0001F60E
 """
+
+inrtokens = [
+    "btc",
+    "matic",
+    "eth",
+    "hbar",
+    "dock",
+    "doge",
+    "xrp",
+    "ada",
+    "xlm",
+    "link",
+    "trx",
+]
+usdttokens = [
+    "btc",
+    "matic",
+    "eth",
+    "hbar",
+    "doge",
+    "xrp",
+    "ada",
+    "xlm",
+    "link",
+    "trx",
+    "xmr",
+    "theta",
+    "tfuel",
+]

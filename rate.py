@@ -18,8 +18,8 @@ def get_time(update: Update = None):
         HH:MM:SS {AM/PM} DD/MM/YYYY
     """
     if update is None:
-        return datetime.now().strftime('%I:%M:%S %p %d/%m/%Y')
-    return update.message.date.astimezone().strftime('%I:%M:%S %p %d/%m/%Y')
+        return datetime.now().strftime("%I:%M:%S %p %d/%m/%Y")
+    return update.message.date.astimezone().strftime("%I:%M:%S %p %d/%m/%Y")
 
 
 def get_username(update: Update, context: CallbackContext):
@@ -38,11 +38,10 @@ def get_username(update: Update, context: CallbackContext):
 
 
 def print_logs(log_message):
-    """Writes logs in logs.txt
-    """
+    """Writes logs in logs.txt"""
     line = "-------------\n"
     log_message = line + log_message + line
-    with open(C.LOG_FILE, 'a+', encoding='utf8') as log_file:
+    with open(C.LOG_FILE, "a+", encoding="utf8") as log_file:
         print(log_message, file=log_file)
 
 
@@ -57,7 +56,7 @@ def get_rate():
     """
     global wazirx_response
     try:
-        wazirx_request = requests.get('https://api.wazirx.com/api/v2/tickers')
+        wazirx_request = requests.get("https://api.wazirx.com/api/v2/tickers")
     except:
         log_text = "API Cannot be fetched\n"
         log_text = log_text + f"Time: {get_time()}\n"
@@ -66,7 +65,7 @@ def get_rate():
         return -1
     if wazirx_request.status_code != 200:
         log_text = f"Status Code: {wazirx_request.status_code}\n"
-        log_text = log_text + str(wazirx_request.headers) + '\n'
+        log_text = log_text + str(wazirx_request.headers) + "\n"
         log_text = log_text + f"Time: {get_time()}\n"
         print_logs(log_text)
         if wazirx_request.status_code in range(400, 500):
@@ -99,7 +98,7 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
     C.CANCEL_ALERT_FLAG = 1
     message = "Alerts will be terminated withing 10 sec."
     update.message.reply_text(message)
-    sleep(10)       # Sleep until All alerts are terminated.
+    sleep(10)  # Sleep until All alerts are terminated.
     C.CANCEL_ALERT_FLAG = 0
     C.ALERT_NUMBER = 0
     C.ALERT_COUNT = 0
@@ -134,27 +133,41 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         update.message.reply_text(C.OOPS_404)
         return -1
     try:
-        nratei = rate[tokeninr]['last']
-        lratei = rate[tokeninr]['low']
-        hratei = rate[tokeninr]['high']
-        volumei = rate[tokeninr]['volume']
-        timei = datetime.fromtimestamp(
-            rate[tokeninr]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
-        rate_text = Template(C.RATE_TEXT_INR).substitute(token=token.upper(
-        ), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
+        nratei = rate[tokeninr]["last"]
+        lratei = rate[tokeninr]["low"]
+        hratei = rate[tokeninr]["high"]
+        volumei = rate[tokeninr]["volume"]
+        timei = datetime.fromtimestamp(rate[tokeninr]["at"]).strftime(
+            "%I:%M:%S %p %d/%m/%Y"
+        )
+        rate_text = Template(C.RATE_TEXT_INR).substitute(
+            token=token.upper(),
+            rate=nratei,
+            lrate=lratei,
+            hrate=hratei,
+            vol=volumei,
+            time=timei,
+        )
         log_text = log_text + f"Sent Time: {get_time()}\n"
         update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
     except:
         token_flag = 1
     try:
-        nrateu = rate[tokenusd]['last']
-        lrateu = rate[tokenusd]['low']
-        hrateu = rate[tokenusd]['high']
-        volumeu = rate[tokenusd]['volume']
-        timeu = datetime.fromtimestamp(
-            rate[tokenusd]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
-        rate_text = Template(C.RATE_TEXT_USD).substitute(token=token.upper(
-        ), rate=nrateu, lrate=lrateu, hrate=hrateu, vol=volumeu, time=timeu)
+        nrateu = rate[tokenusd]["last"]
+        lrateu = rate[tokenusd]["low"]
+        hrateu = rate[tokenusd]["high"]
+        volumeu = rate[tokenusd]["volume"]
+        timeu = datetime.fromtimestamp(rate[tokenusd]["at"]).strftime(
+            "%I:%M:%S %p %d/%m/%Y"
+        )
+        rate_text = Template(C.RATE_TEXT_USD).substitute(
+            token=token.upper(),
+            rate=nrateu,
+            lrate=lrateu,
+            hrate=hrateu,
+            vol=volumeu,
+            time=timeu,
+        )
         update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
     except:
         if token_flag == 1:
@@ -181,20 +194,16 @@ def all_rate(update: Update, context: CallbackContext) -> int:
     log_text = "Command: All Rates\n"
     log_text = log_text + f"Invocation Time: {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
-    inrtokens = ["btc", "matic", "eth", "hbar", "dock",
-                 "doge", "xrp", "ada", "xlm", "link", "trx"]
-    usdttokens = ["btc", "matic", "eth", "hbar",
-                  "doge", "xrp", "ada", "xlm", "link", "trx", "xmr", "theta", "tfuel"]
     message = ""
-    for token in inrtokens:
+    for token in C.inrtokens:
         tokeninr = token + "inr"
-        token_rate = rate[tokeninr]['last']
+        token_rate = rate[tokeninr]["last"]
         message = message + token.upper() + ": " + token_rate + " INR\n"
     update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
     message = ""
-    for token in usdttokens:
+    for token in C.usdttokens:
         tokenusdt = token + "usdt"
-        token_rate = rate[tokenusdt]['last']
+        token_rate = rate[tokenusdt]["last"]
         message = message + token.upper() + ": " + token_rate + " USDT\n"
     log_text = log_text + f"Sent Time: {get_time()}\n"
     update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
@@ -215,12 +224,12 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     ALERT_NUMBER_ = C.ALERT_NUMBER
     message = update.message.text
     message = message.split(" ")
-    token = str(message[0]+"inr").lower()
+    token = str(message[0] + "inr").lower()
     log_text = f"Alert Number: {ALERT_NUMBER_}\n"
     log_text = log_text + f"Alert Plus(Invoked): {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     log_text = log_text + f"Text: {message}\n"
-    if C.ALERT_COUNT > C.WORKERS-4:
+    if C.ALERT_COUNT > C.WORKERS - 4:
         update.message.reply_text(C.OOPS_NOT_POSSIBLE)
         log_text = log_text + "Remarks: No More alerts possible\n"
         print_logs(log_text)
@@ -230,7 +239,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         percentage = float(message[1])
         if percentage <= 0:
             raise ValueError
-        current_rate = float(wazirx_response[token]['last'])
+        current_rate = float(wazirx_response[token]["last"])
     except ValueError:
         log_text = log_text + "Remarks: Value Error\n"
         print_logs(log_text)
@@ -250,9 +259,14 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(C.OOPS_404)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
-    expected_rate = round(current_rate + (current_rate/100*percentage), 2)
-    message_set = Template(C.ALERT_PLUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
-    ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
+    expected_rate = round(current_rate + (current_rate / 100 * percentage), 2)
+    message_set = Template(C.ALERT_PLUS_SET).substitute(
+        ano=ALERT_NUMBER_,
+        token=token[:-3].upper(),
+        lprice=current_rate,
+        aprice=expected_rate,
+        percentage=percentage,
+    )
     update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
     log_text = log_text + f"Sent Time: {get_time()}\n"
     print_logs(log_text)
@@ -265,17 +279,18 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
-            current_rate = float(wazirx_response[token]['last'])
+            current_rate = float(wazirx_response[token]["last"])
         except TypeError:
             log_text = f"Alert Number:{ALERT_NUMBER_}\nWazirX not responding!!\n"
             print_logs(log_text)
         if current_rate >= expected_rate:
             message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
-                ano=ALERT_NUMBER_, token=token.upper()[
-                    :-3], lprice=current_rate,
-                percentage=percentage)
-            update.message.reply_text(
-                message_executed, parse_mode=ParseMode.MARKDOWN)
+                ano=ALERT_NUMBER_,
+                token=token.upper()[:-3],
+                lprice=current_rate,
+                percentage=percentage,
+            )
+            update.message.reply_text(message_executed, parse_mode=ParseMode.MARKDOWN)
             log_text = f"Alert Number: {ALERT_NUMBER_}\n"
             log_text = log_text + f"Alert Plus(Executed): {get_time()}\n"
             print_logs(log_text)
@@ -299,12 +314,12 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
     ALERT_NUMBER_ = C.ALERT_NUMBER
     message = update.message.text
     message = message.split(" ")
-    token = str(message[0]+"inr").lower()
+    token = str(message[0] + "inr").lower()
     log_text = f"Alert Number: {ALERT_NUMBER_}\n"
     log_text = log_text + f"Alert Plus-Minus(Invoked): {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     log_text = log_text + f"Text: {message}\n"
-    if C.ALERT_COUNT > C.WORKERS-4:
+    if C.ALERT_COUNT > C.WORKERS - 4:
         update.message.reply_text(C.OOPS_NOT_POSSIBLE)
         log_text = log_text + "Remarks: No More alerts possible\n"
         print_logs(log_text)
@@ -314,7 +329,7 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
         percentage = float(message[1])
         if percentage <= 0:
             raise ValueError
-        current_rate = float(wazirx_response[token]['last'])
+        current_rate = float(wazirx_response[token]["last"])
     except ValueError:
         log_text = log_text + "Remarks: Value Error\n"
         print_logs(log_text)
@@ -333,13 +348,22 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(C.OOPS_404)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
-    expected_rate_plus = round(current_rate + (current_rate/100*percentage), 2)
-    expected_rate_minus = round(
-        current_rate - (current_rate/100*percentage), 2)
+    expected_rate_plus = round(current_rate + (current_rate / 100 * percentage), 2)
+    expected_rate_minus = round(current_rate - (current_rate / 100 * percentage), 2)
     message_set_plus = Template(C.ALERT_PLUS_SET).substitute(
-        ano=ALERT_NUMBER_, token=token[:-3].upper(), lprice=current_rate, aprice=expected_rate_plus, percentage=percentage)
-    message_set_minus = Template(C.ALERT_MINUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
-    ), lprice=current_rate, aprice=expected_rate_minus, percentage=percentage)
+        ano=ALERT_NUMBER_,
+        token=token[:-3].upper(),
+        lprice=current_rate,
+        aprice=expected_rate_plus,
+        percentage=percentage,
+    )
+    message_set_minus = Template(C.ALERT_MINUS_SET).substitute(
+        ano=ALERT_NUMBER_,
+        token=token[:-3].upper(),
+        lprice=current_rate,
+        aprice=expected_rate_minus,
+        percentage=percentage,
+    )
     log_text = log_text + f"Sent Time: {get_time()}\n"
     update.message.reply_text(message_set_plus, parse_mode=ParseMode.MARKDOWN)
     update.message.reply_text(message_set_minus, parse_mode=ParseMode.MARKDOWN)
@@ -353,29 +377,33 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
-            current_rate = float(wazirx_response[token]['last'])
+            current_rate = float(wazirx_response[token]["last"])
         except TypeError:
             log_text = f"Alert Number:{ALERT_NUMBER_}\nWazirX not responding!!\n"
             print_logs(log_text)
         if current_rate >= expected_rate_plus:
             message_executed = Template(C.ALERT_PLUS_EXECUTED).substitute(
-                ano=ALERT_NUMBER_, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
-            update.message.reply_text(
-                message_executed, parse_mode=ParseMode.MARKDOWN)
+                ano=ALERT_NUMBER_,
+                token=token.upper()[:-3],
+                lprice=current_rate,
+                percentage=percentage,
+            )
+            update.message.reply_text(message_executed, parse_mode=ParseMode.MARKDOWN)
             log_text = f"Alert Number: {ALERT_NUMBER_}\n"
-            log_text = log_text + \
-                f"Alert Plus-Minus(Executed: PLUS): {get_time()}\n"
+            log_text = log_text + f"Alert Plus-Minus(Executed: PLUS): {get_time()}\n"
             print_logs(log_text)
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
         if current_rate <= expected_rate_minus:
             message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(
-                ano=ALERT_NUMBER_, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
-            update.message.reply_text(
-                message_executed, parse_mode=ParseMode.MARKDOWN)
+                ano=ALERT_NUMBER_,
+                token=token.upper()[:-3],
+                lprice=current_rate,
+                percentage=percentage,
+            )
+            update.message.reply_text(message_executed, parse_mode=ParseMode.MARKDOWN)
             log_text = f"Alert Number: {ALERT_NUMBER_}\n"
-            log_text = log_text + \
-                f"Alert Plus-Minus(Executed: MINUS): {get_time()}\n"
+            log_text = log_text + f"Alert Plus-Minus(Executed: MINUS): {get_time()}\n"
             print_logs(log_text)
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             break
@@ -396,14 +424,13 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     ALERT_NUMBER_ = C.ALERT_NUMBER
     message = update.message.text
     message = message.split(" ")
-    token = str(message[0]+"inr").lower()
+    token = str(message[0] + "inr").lower()
     log_text = f"Alert Number: {ALERT_NUMBER_}\n"
     log_text = log_text + f"Alert Minus(Invoked): {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     log_text = log_text + f"Text: {message}\n"
-    if C.ALERT_COUNT > C.WORKERS-4:
-        update.message.reply_text(
-            C.OOPS_NOT_POSSIBLE, file=open(C.LOG_FILE, 'a+'))
+    if C.ALERT_COUNT > C.WORKERS - 4:
+        update.message.reply_text(C.OOPS_NOT_POSSIBLE, file=open(C.LOG_FILE, "a+"))
         log_text = log_text + "Remarks: No More alerts possible\n"
         print_logs(log_text)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
@@ -412,7 +439,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
         percentage = float(message[1])
         if percentage <= 0:
             raise ValueError
-        current_rate = float(wazirx_response[token]['last'])
+        current_rate = float(wazirx_response[token]["last"])
     except ValueError:
         log_text = log_text + "Remarks: Value Error\n"
         print_logs(log_text)
@@ -432,9 +459,14 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(C.OOPS_404)
         C.ALERT_COUNT = C.ALERT_COUNT - 1
         return -1
-    expected_rate = round(current_rate - (current_rate/100*percentage), 2)
-    message_set = Template(C.ALERT_MINUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
-    ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
+    expected_rate = round(current_rate - (current_rate / 100 * percentage), 2)
+    message_set = Template(C.ALERT_MINUS_SET).substitute(
+        ano=ALERT_NUMBER_,
+        token=token[:-3].upper(),
+        lprice=current_rate,
+        aprice=expected_rate,
+        percentage=percentage,
+    )
     log_text = log_text + f"Sent Time: {get_time()}\n"
     update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
     print_logs(log_text)
@@ -447,15 +479,18 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
             C.ALERT_COUNT = C.ALERT_COUNT - 1
             return 0
         try:
-            current_rate = float(wazirx_response[token]['last'])
+            current_rate = float(wazirx_response[token]["last"])
         except TypeError:
             log_text = f"Alert Number:{ALERT_NUMBER_}\nWazirX not responding!!\n"
             print_logs(log_text)
         if current_rate <= expected_rate:
             message_executed = Template(C.ALERT_MINUS_EXECUTED).substitute(
-                ano=ALERT_NUMBER_, token=token.upper()[:-3], lprice=current_rate, percentage=percentage)
-            update.message.reply_text(
-                message_executed, parse_mode=ParseMode.MARKDOWN)
+                ano=ALERT_NUMBER_,
+                token=token.upper()[:-3],
+                lprice=current_rate,
+                percentage=percentage,
+            )
+            update.message.reply_text(message_executed, parse_mode=ParseMode.MARKDOWN)
             log_text = f"Alert Number: {ALERT_NUMBER_}\n"
             log_text = log_text + f"Alert Minus(Executed): {get_time()}\n"
             print_logs(log_text)

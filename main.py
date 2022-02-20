@@ -5,8 +5,13 @@ from threading import Thread
 from time import sleep
 
 from telegram import ParseMode, Update
-from telegram.ext import (CallbackContext, CommandHandler, Filters,
-                          MessageHandler, Updater)
+from telegram.ext import (
+    CallbackContext,
+    CommandHandler,
+    Filters,
+    MessageHandler,
+    Updater,
+)
 
 import constants as C
 import rate as R
@@ -39,7 +44,7 @@ def start_command(update: Update, context: CallbackContext) -> None:
         context : This is a context object error handler.
     """
     user = update.message.from_user
-    update.message.reply_text(f'Hy there !! {user.first_name}')
+    update.message.reply_text(f"Hy there !! {user.first_name}")
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
@@ -77,7 +82,8 @@ def send_logs(update: Update, context: CallbackContext) -> None:
         try:
             with open(C.LOG_FILE, "rb") as file:
                 context.bot.send_document(
-                    chat_id=chat_id, document=file, filename=C.LOG_FILE)
+                    chat_id=chat_id, document=file, filename=C.LOG_FILE
+                )
         except Exception as e:
             log_text = log_text + "Remarks: Error with File logs\n"
             log_text = log_text + f"{e}\n"
@@ -90,8 +96,7 @@ def send_logs(update: Update, context: CallbackContext) -> None:
 
 
 def rate_runner():
-    """Runs get_rate after every C.WAZIRX_API_THRESHOLD sec.
-    """
+    """Runs get_rate after every C.WAZIRX_API_THRESHOLD sec."""
     log_text = "Deamon Thread Initialized...\n"
     R.print_logs(log_text)
     while True:
@@ -100,37 +105,46 @@ def rate_runner():
 
 
 def main():
-    """Main function responsible for starting the bot and listening to commands.
-    """
+    """Main function responsible for starting the bot and listening to commands."""
     config = configparser.ConfigParser()
-    config.read('secrets.ini')
+    config.read("secrets.ini")
 
     # Create the Updater and pass it our bot's token.
-    updater = Updater(token=config['KEYS']
-                      ['API_KEY'], use_context=True, workers=C.WORKERS)
+    updater = Updater(
+        token=config["KEYS"]["API_KEY"], use_context=True, workers=C.WORKERS
+    )
 
     # Get the dispatcher to register handlers
     dispatch = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dispatch.add_handler(MessageHandler(
-        Filters.status_update.new_chat_members, welcome_user))
+    dispatch.add_handler(
+        MessageHandler(Filters.status_update.new_chat_members, welcome_user)
+    )
     dispatch.add_handler(CommandHandler("start", start_command))
-    dispatch.add_handler(MessageHandler(Filters.regex(
-        re.compile('RATE$', re.IGNORECASE)), R.rate_command, run_async=True))
-    dispatch.add_handler(MessageHandler(
-        Filters.regex(r'\+-$'), R.alert_plus_minus, run_async=True))
-    dispatch.add_handler(MessageHandler(
-        Filters.regex(r'\+$'), R.alert_plus, run_async=True))
-    dispatch.add_handler(MessageHandler(
-        Filters.regex(r'-$'), R.alert_minus, run_async=True))
+    dispatch.add_handler(
+        MessageHandler(
+            Filters.regex(re.compile("RATE$", re.IGNORECASE)),
+            R.rate_command,
+            run_async=True,
+        )
+    )
+    dispatch.add_handler(
+        MessageHandler(Filters.regex(r"\+-$"), R.alert_plus_minus, run_async=True)
+    )
+    dispatch.add_handler(
+        MessageHandler(Filters.regex(r"\+$"), R.alert_plus, run_async=True)
+    )
+    dispatch.add_handler(
+        MessageHandler(Filters.regex(r"-$"), R.alert_minus, run_async=True)
+    )
     dispatch.add_handler(CommandHandler("source", source_command))
-    dispatch.add_handler(CommandHandler(
-        "cancel_alerts", R.cancel_alert, run_async=True))
+    dispatch.add_handler(
+        CommandHandler("cancel_alerts", R.cancel_alert, run_async=True)
+    )
     dispatch.add_handler(CommandHandler("all_rates", R.all_rate))
     dispatch.add_handler(CommandHandler("help", help_command))
-    dispatch.add_handler(CommandHandler(
-        "get_logs", send_logs, run_async=True))
+    dispatch.add_handler(CommandHandler("get_logs", send_logs, run_async=True))
 
     # Start the Bot
     updater.start_polling()
