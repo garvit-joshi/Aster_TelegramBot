@@ -1,9 +1,11 @@
+from datetime import datetime
 from string import Template
 from time import sleep
-from datetime import datetime
+
 import requests
-from telegram.ext import CallbackContext
 from telegram import ParseMode, Update
+from telegram.ext import CallbackContext
+
 import constants as C
 
 wazirx_response = 0
@@ -67,7 +69,7 @@ def get_rate():
         log_text = log_text + str(wazirx_request.headers) + '\n'
         log_text = log_text + f"Time: {get_time()}\n"
         print_logs(log_text)
-        if wazirx_request.status_code in range(400,500):
+        if wazirx_request.status_code in range(400, 500):
             sleep(600)
         else:
             sleep(30)
@@ -84,22 +86,23 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
          0: All Alerts are cancelled
     """
     log_text = f"Command: Cancel Alerts\nUser: {get_username(update, context)}\n"
-    log_text = log_text + f"Time: {get_time(update)}\n"
+    log_text = log_text + f"Invocation Time: {get_time(update)}\n"
     if get_username(update, context) != "garvit_joshi9":
         log_text = log_text + "Remarks: Not a Developer\n"
         print_logs(log_text)
         update.message.reply_text(C.ERROR_PRIVILEGE)
         return -1
     C.CANCEL_ALERT_FLAG = 1
-    print_logs(log_text)
     message = "Alerts will be terminated withing 10 sec."
     update.message.reply_text(message)
     sleep(10)       # Sleep until All alerts are terminated.
     C.CANCEL_ALERT_FLAG = 0
     C.ALERT_NUMBER = 0
     C.ALERT_COUNT = 0
-    update.message.reply_text("All Alerts Cancelled!!")
     C.WAZIRX_API_THRESHOLD = 15
+    log_text = log_text + f"Sent Time: {get_time()}\n"
+    update.message.reply_text("All Alerts Cancelled!!")
+    print_logs(log_text)
     return 0
 
 
@@ -118,7 +121,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         token = command[:-4].lower()
     tokeninr = token + "inr"
     tokenusd = token + "usdt"
-    log_text = log_text + f"Time: {get_time(update)}\n"
+    log_text = log_text + f"Invocation Time: {get_time(update)}\n"
     log_text = log_text + f"Token: {token.upper()}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
     token_flag = 0
@@ -135,6 +138,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
             rate[tokeninr]['at']).strftime('%I:%M:%S %p %d/%m/%Y')
         rate_text = Template(C.RATE_TEXT_INR).substitute(token=token.upper(
         ), rate=nratei, lrate=lratei, hrate=hratei, vol=volumei, time=timei)
+        log_text = log_text + f"Sent Time: {get_time()}\n"
         update.message.reply_text(rate_text, parse_mode=ParseMode.MARKDOWN)
     except:
         token_flag = 1
@@ -171,9 +175,8 @@ def all_rate(update: Update, context: CallbackContext) -> int:
         update.message.reply_text(C.OOPS_404)
         return -1
     log_text = "Command: All Rates\n"
-    log_text = log_text + f"Time: {get_time(update)}\n"
+    log_text = log_text + f"Invocation Time: {get_time(update)}\n"
     log_text = log_text + f"User: {get_username(update, context)}\n"
-    print_logs(log_text)
     inrtokens = ["btc", "matic", "eth", "hbar", "dock",
                  "doge", "xrp", "ada", "xlm", "link", "trx"]
     usdttokens = ["btc", "matic", "eth", "hbar",
@@ -189,7 +192,9 @@ def all_rate(update: Update, context: CallbackContext) -> int:
         tokenusdt = token + "usdt"
         token_rate = rate[tokenusdt]['last']
         message = message + token.upper() + ": " + token_rate + " USDT\n"
+    log_text = log_text + f"Sent Time: {get_time()}\n"
     update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+    print_logs(log_text)
     return 0
 
 
@@ -245,6 +250,7 @@ def alert_plus(update: Update, context: CallbackContext) -> int:
     message_set = Template(C.ALERT_PLUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
     ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
     update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
+    log_text = log_text + f"Sent Time: {get_time()}\n"
     print_logs(log_text)
     while True:
         if C.CANCEL_ALERT_FLAG == 1:
@@ -330,6 +336,7 @@ def alert_plus_minus(update: Update, context: CallbackContext) -> int:
         ano=ALERT_NUMBER_, token=token[:-3].upper(), lprice=current_rate, aprice=expected_rate_plus, percentage=percentage)
     message_set_minus = Template(C.ALERT_MINUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
     ), lprice=current_rate, aprice=expected_rate_minus, percentage=percentage)
+    log_text = log_text + f"Sent Time: {get_time()}\n"
     update.message.reply_text(message_set_plus, parse_mode=ParseMode.MARKDOWN)
     update.message.reply_text(message_set_minus, parse_mode=ParseMode.MARKDOWN)
     print_logs(log_text)
@@ -424,6 +431,7 @@ def alert_minus(update: Update, context: CallbackContext) -> int:
     expected_rate = round(current_rate - (current_rate/100*percentage), 2)
     message_set = Template(C.ALERT_MINUS_SET).substitute(ano=ALERT_NUMBER_, token=token[:-3].upper(
     ), lprice=current_rate, aprice=expected_rate, percentage=percentage)
+    log_text = log_text + f"Sent Time: {get_time()}\n"
     update.message.reply_text(message_set, parse_mode=ParseMode.MARKDOWN)
     print_logs(log_text)
     while True:

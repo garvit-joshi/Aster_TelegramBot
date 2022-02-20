@@ -1,19 +1,15 @@
-from string import Template
-import re
-from time import sleep
 import configparser
+import re
+from string import Template
 from threading import Thread
-from telegram.ext import (
-    Updater,
-    CommandHandler,
-    CallbackContext,
-    MessageHandler,
-    Filters
-)
-from telegram import Update, ParseMode
+from time import sleep
+
+from telegram import ParseMode, Update
+from telegram.ext import (CallbackContext, CommandHandler, Filters,
+                          MessageHandler, Updater)
+
 import constants as C
 import rate as R
-
 
 print("Bot Started...\n")
 start_text = f"Bot Started at {R.get_time()}\n"
@@ -32,7 +28,7 @@ def welcome_user(update: Update, context: CallbackContext) -> None:
         new_user = new_user.first_name
         welcome_message = "Welcome " + new_user
         context.bot.send_message(chat_id, welcome_message)
-        log_text = f"Welcome user at {R.get_time()} \nUser: {R.get_username(update, context)}\n"
+        log_text = f"Welcome user at {R.get_time(update)} \nUser: {R.get_username(update, context)}\n"
         R.print_logs(log_text)
 
 
@@ -75,7 +71,7 @@ def send_logs(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
     username = R.get_username(update, context)
     log_text = "Command: Get Logs\n"
-    log_text = log_text + f"Time: {R.get_time(update)}\n"
+    log_text = log_text + f"Invocation Time: {R.get_time(update)}\n"
     log_text = log_text + f"User: {username}\n"
     if username == "garvit_joshi9":  # Sent from Developer
         try:
@@ -89,6 +85,7 @@ def send_logs(update: Update, context: CallbackContext) -> None:
     else:
         log_text = log_text + "Remarks: Not a Developer\n"
         update.message.reply_text(C.ERROR_PRIVILEGE)
+    log_text = log_text + f"Sent Time: {R.get_time()}\n"
     R.print_logs(log_text)
 
 
