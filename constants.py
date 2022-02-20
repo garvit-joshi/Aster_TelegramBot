@@ -1,4 +1,4 @@
-LOG_FILE = "logs.txt"  # Log File
+LOG_FILE = "Main.log"  # Log File
 
 WORKERS = 25
 

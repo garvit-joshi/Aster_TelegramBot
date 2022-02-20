@@ -82,7 +82,7 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
     """Cancels the alerts
 
     Returns:
-        -1: If Not called by Developer
+        -1: If Not called by Developer, already a thread running
          0: All Alerts are cancelled
     """
     log_text = f"Command: Cancel Alerts\nUser: {get_username(update, context)}\n"
@@ -91,6 +91,10 @@ def cancel_alert(update: Update, context: CallbackContext) -> int:
         log_text = log_text + "Remarks: Not a Developer\n"
         print_logs(log_text)
         update.message.reply_text(C.ERROR_PRIVILEGE)
+        return -1
+    if C.CANCEL_ALERT_FLAG == 1:
+        log_text = log_text + "Remarks: Already a thread running\n"
+        print_logs(log_text)
         return -1
     C.CANCEL_ALERT_FLAG = 1
     message = "Alerts will be terminated withing 10 sec."
