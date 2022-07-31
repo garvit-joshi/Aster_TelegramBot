@@ -18,8 +18,8 @@ def get_time(update: Update = None):
         HH:MM:SS {AM/PM} DD/MM/YYYY
     """
     if update is None:
-        return datetime.now().strftime("%I:%M:%S %p %d/%m/%Y")
-    return update.message.date.astimezone().strftime("%I:%M:%S %p %d/%m/%Y")
+        return datetime.now().strftime(C.TIME_FORMAT)
+    return update.message.date.astimezone().strftime(C.TIME_FORMAT)
 
 
 def get_username(update: Update, context: CallbackContext):
@@ -137,9 +137,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         lratei = rate[tokeninr]["low"]
         hratei = rate[tokeninr]["high"]
         volumei = rate[tokeninr]["volume"]
-        timei = datetime.fromtimestamp(rate[tokeninr]["at"]).strftime(
-            "%I:%M:%S %p %d/%m/%Y"
-        )
+        timei = datetime.fromtimestamp(rate[tokeninr]["at"]).strftime(C.TIME_FORMAT)
         rate_text = Template(C.RATE_TEXT_INR).substitute(
             token=token.upper(),
             rate=nratei,
@@ -157,9 +155,7 @@ def rate_command(update: Update, context: CallbackContext, token=None) -> int:
         lrateu = rate[tokenusd]["low"]
         hrateu = rate[tokenusd]["high"]
         volumeu = rate[tokenusd]["volume"]
-        timeu = datetime.fromtimestamp(rate[tokenusd]["at"]).strftime(
-            "%I:%M:%S %p %d/%m/%Y"
-        )
+        timeu = datetime.fromtimestamp(rate[tokenusd]["at"]).strftime(C.TIME_FORMAT)
         rate_text = Template(C.RATE_TEXT_USD).substitute(
             token=token.upper(),
             rate=nrateu,

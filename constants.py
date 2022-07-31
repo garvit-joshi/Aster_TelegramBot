@@ -12,6 +12,8 @@ CANCEL_ALERT_FLAG = 0
 
 ERROR_PRIVILEGE = "Sorry!! This command can only be executed by a developer"
 
+TIME_FORMAT = "%I:%M:%S %p %d/%m/%Y"
+
 RATE_TEXT_INR = """
 ***Token Rate $token/INR***
 ***Rate:*** $rate INR
